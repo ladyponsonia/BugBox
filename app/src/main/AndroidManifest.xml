@@ -31,7 +31,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="***REMOVED***"/>
-
+        <provider
+            android:authorities="com.example.android.bugbox"
+            android:name="com.example.android.bugbox.contentProvider.BugsContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

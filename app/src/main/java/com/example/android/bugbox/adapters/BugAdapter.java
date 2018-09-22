@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.android.bugbox.R;
 import com.example.android.bugbox.model.Bug;
+import com.example.android.bugbox.model.Bug3D;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,18 +21,18 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private ArrayList<Bug> mBugsData;
+    private ArrayList<Bug3D> mBugsData;
     private Context mContext;
     private final BugOnClickHandler mClickHandler;
 
-    public BugAdapter(Context context, ArrayList<Bug> bugsData, BugOnClickHandler clickHandler){
+    public BugAdapter(Context context, ArrayList<Bug3D> bugsData, BugOnClickHandler clickHandler){
         mContext = context;
         mBugsData = bugsData;
         mClickHandler = clickHandler;
     }
 
     public interface BugOnClickHandler {
-        void onClick(Bug bug); //on click method will be implemented in BugsActivity
+        void onClick(Bug3D bug); //on click method will be implemented in BugsActivity
     }
 
     @NonNull
@@ -48,7 +49,7 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull BugAdapter.BugViewHolder holder, int position) {
-        Bug bug = mBugsData.get(position);
+        Bug3D bug = mBugsData.get(position);
 
         //set name if not empty
         if(!bug.getName().isEmpty()) {
@@ -95,12 +96,12 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Bug bug = mBugsData.get(adapterPosition);
+            Bug3D bug = mBugsData.get(adapterPosition);
             mClickHandler.onClick(bug);
         }
     }
 
-    public void setRecipeData(ArrayList<Bug> bugData) {
+    public void setBugData(ArrayList<Bug3D> bugData) {
         mBugsData = bugData;
         notifyDataSetChanged();
     }

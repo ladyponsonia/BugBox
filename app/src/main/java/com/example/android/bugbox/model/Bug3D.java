@@ -1,9 +1,10 @@
 package com.example.android.bugbox.model;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.text.Format;
 import java.util.List;
 
 /*bug 3D asset info
@@ -14,10 +15,10 @@ public class Bug3D {
 
     @SerializedName("name")
     @Expose
-    private String mName;
+    private String mPolyAssetId;
     @SerializedName("displayName")
     @Expose
-    private String mDisplayName;
+    private String mName;
     @SerializedName("authorName")
     @Expose
     private String mAuthorName;
@@ -28,15 +29,46 @@ public class Bug3D {
     @Expose
     private BugThumbnail mThumbnail;
 
-    public Bug3D (String name, String displayName, String authorName,
+    @Nullable
+    private String mObjFileLocation;
+
+    @Nullable
+    private String mMtlFileLocation;
+
+    @Nullable
+    private String mPngFileLocation;
+
+
+    public Bug3D (String polyAssetID, String name, String authorName,
                   List<BugFormats> formats, BugThumbnail thumbnail){
+        this.mPolyAssetId = polyAssetID;
         this.mName = name;
-        this.mDisplayName = displayName;
         this.mAuthorName = authorName;
         this.mFormats = formats;
         this.mThumbnail = thumbnail;
     }
 
+    public Bug3D (String polyAssetID, String name, String authorName,
+                  List<BugFormats> formats, BugThumbnail thumbnail,
+                  String objFileLocation, String mtlFileLocation, String pngFileLocation){
+        this.mPolyAssetId = polyAssetID;
+        this.mName = name;
+        this.mAuthorName = authorName;
+        this.mFormats = formats;
+        this.mThumbnail = thumbnail;
+        this.mObjFileLocation = objFileLocation;
+        this.mMtlFileLocation = mtlFileLocation;
+        this.mPngFileLocation = pngFileLocation;
+    }
+
+
+    public String getPolyAssetId() {
+        return mPolyAssetId;
+    }
+
+    public void setPolyAssetId(String polyAssetId) {
+        this.mPolyAssetId = polyAssetId;
+    }
 
     public String getName() {
         return mName;
@@ -44,14 +76,6 @@ public class Bug3D {
 
     public void setName(String name) {
         this.mName = name;
-    }
-
-    public String getDisplayName() {
-        return mDisplayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.mDisplayName = displayName;
     }
 
     public String getAuthorName() {
