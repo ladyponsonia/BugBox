@@ -1,5 +1,8 @@
 package com.example.android.bugbox.model;
 
+
+//bug location info
+//contains all bug info used by the map fragment
 public class Bug {
 
     private String mName;

@@ -7,11 +7,22 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android.bugbox.adapters.FragmentPagerAdapter;
+import com.example.android.bugbox.model.Bug3D;
+import com.example.android.bugbox.network.GetDataService;
+import com.example.android.bugbox.network.RetrofitClientInstance;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BugsActivity extends AppCompatActivity {
 

@@ -6,14 +6,23 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.android.bugbox.adapters.BugAdapter;
 import com.example.android.bugbox.model.Bug;
+import com.example.android.bugbox.model.Bug3D;
+import com.example.android.bugbox.network.GetDataService;
+import com.example.android.bugbox.network.RetrofitClientInstance;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -31,6 +40,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
     private BugAdapter mBugAdapter;
     private ArrayList<Bug> mBugsList;
     private LayoutManager mLayoutManager;
+    private String mThumbUrl;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,6 +82,27 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        //Create handle for the RetrofitInstance interface
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+        Call<Bug3D> call = service.getBug3D();
+        call.enqueue(new Callback<Bug3D>() {
+            @Override
+            public void onResponse(Call<Bug3D> call, Response<Bug3D> response) {
+
+                mThumbUrl = response.body().getThumbnail().getUrl();
+                Log.d("BugsActivity", mThumbUrl);
+            }
+
+            @Override
+            public void onFailure(Call<Bug3D> call, Throwable t) {
+                Toast.makeText(getContext(), "Connection error"
+                        , Toast.LENGTH_LONG).show();
+                Log.d("BUGS_ACTIVITY", "Connection error");
+                t.printStackTrace ();
+            }
+
+        });
     }
 
     @Override
@@ -114,7 +145,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
             //, Bundle savedInstanceState
     ) {
         mBugsRV = mRootview.findViewById(R.id.bugs_rv);
-        mBugAdapter = new BugAdapter(getActivity(),bugsList, this);
+        mBugAdapter = new BugAdapter(getActivity(),bugsList, this );
         //1 column for phone, 3 column for tablet
         int columnsNum = 2;
         /*if (getResources().getConfiguration().screenWidthDp >= 700){

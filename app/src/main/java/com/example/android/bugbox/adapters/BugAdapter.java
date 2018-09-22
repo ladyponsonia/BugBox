@@ -60,9 +60,10 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
         String imagePath = bug.getImage();
         if (imagePath.isEmpty()){
             Log.d(TAG, "using default image");*/
-            Picasso.with(mContext)
-                    .load(R.drawable.ic_launcher_foreground)
-                    .into(holder.mImage);
+        Picasso.with(mContext)
+                .load("https://lh3.googleusercontent.com/OG_KLF297iJH2IZZ5Zw_eLF326KL1JFktz0ZASMKsYx9OMb8k6XJAFYQ9u4vOtj2")
+                .resize(300,300)
+                .into(holder.mImage);
         /*}else {
             Picasso.with(mContext)
                     .load(imagePath)
