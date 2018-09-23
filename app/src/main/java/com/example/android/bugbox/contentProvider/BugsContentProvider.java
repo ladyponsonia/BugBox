@@ -64,6 +64,7 @@ public class BugsContentProvider extends ContentProvider {
 
         // Set a notification URI on the Cursor and return that Cursor
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        getContext().getContentResolver().notifyChange(uri, null);
         return retCursor;
     }
 

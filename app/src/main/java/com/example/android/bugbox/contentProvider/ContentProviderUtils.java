@@ -27,7 +27,6 @@ public class ContentProviderUtils {
 
         ArrayList<Bug3D> bugsList = new ArrayList<Bug3D>();
         if (bugsCursor.moveToFirst()){
-            int i = 0;
             while(!bugsCursor.isAfterLast()){
                 String bugId = bugsCursor.getString(bugsCursor.getColumnIndex(BugEntry.COLUMN_POLY_ASSET_ID));
                 String bugName = bugsCursor.getString(bugsCursor.getColumnIndex(BugEntry.COLUMN_NAME));
@@ -64,15 +63,16 @@ public class ContentProviderUtils {
                 List<BugFormats> bugFormatsList = new ArrayList<BugFormats>();
                 bugFormatsList.add(bugFormats);
 
-                bugsCursor.moveToNext();
                 //create new bug with data from cursor row
                 Bug3D bug = new Bug3D( bugId, bugName, bugAuthor, bugFormatsList, bugThumbnail,
                         bugObjFileLoc, bugMtlFileLoc, bugPngFileLoc);
                 bugsList.add(bug);
-                i++;
+
+                bugsCursor.moveToNext();
+
             }
-            bugsCursor.close();
         }
+        //bugsCursor.close();
         return bugsList;
     }
 
@@ -88,8 +88,10 @@ public class ContentProviderUtils {
         contentValues.put(BugEntry.COLUMN_OBJ_URL, bug.getFormats().get(0).getRoot().getUrl());
         contentValues.put(BugEntry.COLUMN_MTL_FILENAME, bug.getFormats().get(0).getResources().get(0).getRelativePath());
         contentValues.put(BugEntry.COLUMN_MTL_URL, bug.getFormats().get(0).getResources().get(0).getUrl());
-        contentValues.put(BugEntry.COLUMN_TEXTURE_FILENAME, bug.getFormats().get(0).getResources().get(1).getRelativePath());
-        contentValues.put(BugEntry.COLUMN_TEXTURE_URL, bug.getFormats().get(0).getResources().get(1).getUrl());
+        if (bug.getFormats().get(0).getResources().size()>1) {
+            contentValues.put(BugEntry.COLUMN_TEXTURE_FILENAME, bug.getFormats().get(0).getResources().get(1).getRelativePath());
+            contentValues.put(BugEntry.COLUMN_TEXTURE_URL, bug.getFormats().get(0).getResources().get(1).getUrl());
+        }
 
         Uri uri = context.getContentResolver().insert(BugEntry.CONTENT_URI, contentValues );
 
