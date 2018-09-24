@@ -48,17 +48,17 @@ import retrofit2.Response;
  * Use the {@link MyBugsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHandler, LoaderManager.LoaderCallbacks {
+public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHandler,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private View mRootview;
     private RecyclerView mBugsRV;
     private BugAdapter mBugAdapter;
-    private ArrayList<Bug3D> mBugsList;
     private LayoutManager mLayoutManager;
 
 
     private static final int DB_QUERY_LOADER_ID = 888;
-
+    private final String TAG = this.getClass().getSimpleName();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -108,7 +108,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mRootview = inflater.inflate(R.layout.fragment_my_bugs, container, false);
-
+        setBugAdapter();
         //db query for mybugs recycler view
         getActivity().getSupportLoaderManager().initLoader(DB_QUERY_LOADER_ID, null, this);
         return mRootview;
@@ -140,11 +140,11 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         //mListener = null;
     }
 
-    private void setBugAdapter(ArrayList<Bug3D> bugsList
+    private void setBugAdapter(
             //, Bundle savedInstanceState
     ) {
         mBugsRV = mRootview.findViewById(R.id.bugs_rv);
-        mBugAdapter = new BugAdapter(getActivity(),bugsList, this );
+        mBugAdapter = new BugAdapter(getActivity(), this );
         //1 column for phone, 3 column for tablet
         int columnsNum = 2;
         /*if (getResources().getConfiguration().screenWidthDp >= 700){
@@ -162,7 +162,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
     }
 
     @Override
-    public void onClick(Bug3D bug) {
+    public void onClick(int adapterPosition) {
 
     }
 
@@ -193,11 +193,12 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
             @Override
             protected void onStartLoading() {
-                if (bugsData != null) {
+                Log.d (TAG, "onStartLoading") ;
+                /*if (bugsData != null) {
                     deliverResult(bugsData);
-                } else {
+                } else {  */
                     forceLoad();
-                }
+                //}
             }
 
             @Override
@@ -221,21 +222,13 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
                 super.deliverResult(data);
             }
         };
-        // return null;
     }
 
 
     @Override
-    public void onLoadFinished(Loader loader, Object data) {
-        mBugsList = ContentProviderUtils.cursorToBugList((Cursor)data);
-        if(mBugAdapter == null) {
-            setBugAdapter(mBugsList);
-            Log.d ("MY_BUGS_FRAGMENT", "adapter null: "+ (mBugAdapter == null));
-        }else{
-
-            mBugAdapter.setBugData(mBugsList);
-            Log.d ("MY_BUGS_FRAGMENT", "mBugsList size: " + mBugsList.size());
-        }
+    public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
+        Log.d (TAG, "onLoadFinished") ;
+        mBugAdapter.swapCursor(newCursor);
         /*if there's no data show error msg
         if (mBugsList == null) {
             errorTV.setText(R.string.no_data);
@@ -247,13 +240,14 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        mBugAdapter.swapCursor(null);
+        Log.d (TAG, "onLoaderReset");
     }
 
     //db re-query for mybugs recycler view
     // to be called from activity when new bug is added to db
     public void refreshData(){
-        mBugAdapter.setBugData(null);
+        Log.d (TAG, "refreshing data") ;
         getActivity().getSupportLoaderManager().restartLoader(DB_QUERY_LOADER_ID, null, this );
     }
 
