@@ -59,6 +59,8 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
         String bugThumbUrl = mCursor.getString(mCursor.getColumnIndex(BugEntry.COLUMN_THUMBNAIL));
 
         Log.d(TAG, bugName + " " + bugThumbUrl );
+        //set tag. will be used to delete item
+        holder.itemView.setTag(position);
 
 
         //set name if not empty

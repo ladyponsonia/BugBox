@@ -2,11 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.bugbox">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -15,27 +14,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BugsActivity"></activity>
+        <activity android:name=".BugsActivity" />
+        <activity
+            android:name=".ARActivity"
+            android:parentActivityName="com.example.android.bugbox.BugsActivity"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_api_key"/>
+            android:value="@string/google_maps_api_key" />
+
         <provider
+            android:name=".contentProvider.BugsContentProvider"
             android:authorities="com.example.android.bugbox"
-            android:name="com.example.android.bugbox.contentProvider.BugsContentProvider"
+            android:exported="false" />
+        <service
+            android:name="com.example.android.bugbox.services.DownloadBugIntentService"
             android:exported="false"/>
+
     </application>
 
 </manifest>

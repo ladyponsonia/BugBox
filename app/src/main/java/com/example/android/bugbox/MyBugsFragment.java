@@ -1,43 +1,25 @@
 package com.example.android.bugbox;
 
-import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.database.Cursor;
-import android.graphics.Movie;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.android.bugbox.adapters.BugAdapter;
-import com.example.android.bugbox.contentProvider.ContentProviderUtils;
-import com.example.android.bugbox.model.Bug3D;
-import com.example.android.bugbox.model.BugFormats;
-import com.example.android.bugbox.model.BugResources;
-import com.example.android.bugbox.model.BugRoot;
-import com.example.android.bugbox.model.BugThumbnail;
-import com.example.android.bugbox.network.GetDataService;
-import com.example.android.bugbox.network.RetrofitClientInstance;
 import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 /**
@@ -58,6 +40,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
 
     private static final int DB_QUERY_LOADER_ID = 888;
+    public static final String BUG_ID = "bug-id";
     private final String TAG = this.getClass().getSimpleName();
 
     // TODO: Rename parameter arguments, choose names that match
@@ -111,6 +94,30 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         setBugAdapter();
         //db query for mybugs recycler view
         getActivity().getSupportLoaderManager().initLoader(DB_QUERY_LOADER_ID, null, this);
+
+        // Add a touch helper to swipe left to delete an item.
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                Log.d(TAG, "item swipped");
+
+                int id = (int) viewHolder.itemView.getTag();
+                // Build uri with id appended
+                Uri uri = BugEntry.CONTENT_URI;
+                uri = uri.buildUpon().appendPath(Integer.toString(id)).build();
+                //Delete row from db
+                getActivity().getContentResolver().delete(uri, null, null);
+                // Restart the loader
+                getActivity().getSupportLoaderManager().restartLoader(DB_QUERY_LOADER_ID,
+                        null, MyBugsFragment.this);
+
+            }
+        }).attachToRecyclerView(mBugsRV);
         return mRootview;
     }
 
@@ -163,8 +170,14 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     @Override
     public void onClick(int adapterPosition) {
-
+        Intent ARIntent = new Intent(getActivity(), ARActivity.class);
+        ARIntent.putExtra(BUG_ID, adapterPosition );
+        startActivity(ARIntent);
     }
+
+
+
+
 
 
 
@@ -186,48 +199,20 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     @Override
     public Loader onCreateLoader(int id, Bundle bundle) {
-        return new AsyncTaskLoader<Cursor>(getContext()) {
 
-            // Initialize a Cursor to hold all the bugs data
-            Cursor bugsData = null;
+        String[] mProjection = {BugEntry.COLUMN_NAME, BugEntry.COLUMN_THUMBNAIL};
 
-            @Override
-            protected void onStartLoading() {
-                Log.d (TAG, "onStartLoading") ;
-                /*if (bugsData != null) {
-                    deliverResult(bugsData);
-                } else {  */
-                    forceLoad();
-                //}
-            }
-
-            @Override
-            public Cursor loadInBackground() {
-                try {
-                    return getActivity().getContentResolver().query(BugEntry.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            null);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            // deliverResult sends the result of the load, a Cursor, to the registered listener
-            public void deliverResult(Cursor data) {
-                bugsData = data;
-                super.deliverResult(data);
-            }
-        };
+        return new CursorLoader(getContext(),
+                BugEntry.CONTENT_URI,
+                mProjection,
+                null,
+                null,
+                null);
     }
-
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
-        Log.d (TAG, "onLoadFinished") ;
+        Log.d (TAG, "onLoadFinished ") ;
         mBugAdapter.swapCursor(newCursor);
         /*if there's no data show error msg
         if (mBugsList == null) {

@@ -31,7 +31,7 @@
         app:tabTextColor="@color/colorPrimaryDark"
         app:tabSelectedTextColor="@color/colorSecondary"/>
 
-    <android.support.v4.view.ViewPager
+    <com.example.android.bugbox.adapters.LockableViewPager
         android:id="@+id/fragments_pager"
         android:layout_width="match_parent"
         android:layout_height="fill_parent" />

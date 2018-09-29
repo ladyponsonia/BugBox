@@ -1,4 +1,4 @@
-package com.example.android.bugbox.contentProvider;
+package com.example.android.bugbox.utilities;
 
 /* with help from https://developer.android.com/training/data-storage/files and
 https://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android

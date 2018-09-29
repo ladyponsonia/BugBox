@@ -8,6 +8,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.provider.UserDictionary;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
@@ -43,6 +44,7 @@ public class BugsContentProvider extends ContentProvider {
     @Nullable
     @Override
     //query all bugs to display in mybugs recycler view
+    //or query selected bug to get info for AR activity
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         final SQLiteDatabase db = mBugDbHelper.getReadableDatabase();
@@ -58,6 +60,19 @@ public class BugsContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case BUG_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                String mSelection = "_id=?";
+                String[] mSelectionArgs = new String[]{id};
+                retCursor =  db.query(BugEntry.TABLE_NAME,
+                        projection,
+                        mSelection,
+                        mSelectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -102,10 +117,13 @@ public class BugsContentProvider extends ContentProvider {
         final SQLiteDatabase db = mBugDbHelper.getWritableDatabase();
 
         int bugDeleted;
+        String id = uri.getPathSegments().get(1);
+        String mSelection = "_id=?";
+        String[] mSelectionArgs = new String[]{id};
 
         switch (sUriMatcher.match(uri)) {
-            case BUGS:
-                bugDeleted = db.delete(BugEntry.TABLE_NAME, BugEntry.COLUMN_POLY_ASSET_ID+"=?", selectionArgs);
+            case BUG_WITH_ID:
+                bugDeleted = db.delete(BugEntry.TABLE_NAME, mSelection, mSelectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -119,8 +137,31 @@ public class BugsContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    //to add saved files location to db
+    //with help from https://developer.android.com/guide/topics/providers/content-provider-basics
+    public int update(@NonNull Uri uri, @Nullable ContentValues values,
+                      @Nullable String selection, @Nullable String[] selectionArgs) {
+
+        final SQLiteDatabase db = mBugDbHelper.getWritableDatabase();
+
+        String id = uri.getPathSegments().get(1);
+        String mSelection = "_id=?";
+        String[] mSelectionArgs = new String[]{id};
+        int rowUpdated;
+
+        switch (sUriMatcher.match(uri)) {
+            case BUG_WITH_ID:
+                rowUpdated = db.update( BugEntry.TABLE_NAME, values, mSelection, mSelectionArgs);
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Notify the content resolver
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return rowUpdated;
     }
 
     @Nullable
