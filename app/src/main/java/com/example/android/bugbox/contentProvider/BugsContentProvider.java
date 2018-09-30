@@ -43,8 +43,7 @@ public class BugsContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    //query all bugs to display in mybugs recycler view
-    //or query selected bug to get info for AR activity
+    //query all bugs to display in mybugs recycler view and delete
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         final SQLiteDatabase db = mBugDbHelper.getReadableDatabase();

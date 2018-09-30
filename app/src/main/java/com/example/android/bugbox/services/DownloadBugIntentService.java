@@ -13,9 +13,12 @@ public class DownloadBugIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-
+        String polyAssetId = null;
         String action = intent.getAction();
-        NotificationUtils.executeAction(getApplicationContext(), action);
+        if (intent.hasExtra(NotificationUtils.POLY_ASSET_ID_KEY)) {
+            polyAssetId = intent.getStringExtra(NotificationUtils.POLY_ASSET_ID_KEY);
+        }
+        NotificationUtils.executeAction(getApplicationContext(), action, polyAssetId );
 
     }
 }

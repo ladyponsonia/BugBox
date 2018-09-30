@@ -1,12 +1,15 @@
 package com.example.android.bugbox.utilities;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.bugbox.BugsActivity;
 import com.example.android.bugbox.BuildConfig;
 import com.example.android.bugbox.MyBugsFragment;
+import com.example.android.bugbox.model.Bug;
 import com.example.android.bugbox.model.Bug3D;
 import com.example.android.bugbox.network.GetDataService;
 import com.example.android.bugbox.network.RetrofitClientInstance;
@@ -20,12 +23,12 @@ public class DownloadBugUtils {
     private static final String POLY_API_KEY = BuildConfig.POLY_API_KEY;
 
     //download bug
-    public static void downloadBug(final Context context){
+    public static void downloadBug(final Context context, String polyAssetId){
         Log.d("SERVICE", "downloadBug called");
 
         //Create handle for the RetrofitInstance interface
         GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
-        Call<Bug3D> call = service.getBug3D("4K7V5f9ntfu", POLY_API_KEY);
+        Call<Bug3D> call = service.getBug3D(polyAssetId, POLY_API_KEY);
 
         call.enqueue(new Callback<Bug3D>() {
             @Override
@@ -38,8 +41,18 @@ public class DownloadBugUtils {
 
                 //save file locations to db
 
-                //refresh myBugs recycler view
-               BugsActivity.refreshMyBugs();
+                //refresh myBugs recycler view and show MyBugs tab
+               //BugsActivity.refreshMyBugs();
+               Intent myBugsIntent = new Intent(context, BugsActivity.class);
+               context.startActivity(myBugsIntent);
+               //with help from https://stackoverflow.com/questions/11962268/viewpager-setcurrentitempageid-true-does-not-smoothscroll
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        BugsActivity.switchToMyBugsTab();
+                    }
+                }, 300);
+
 
             }
 
@@ -52,4 +65,5 @@ public class DownloadBugUtils {
         });
 
     }
+
 }

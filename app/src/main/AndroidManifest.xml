@@ -15,14 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BugsActivity" />
+        <activity android:name=".BugsActivity"
+            android:launchMode="singleInstance"
+            android:parentActivityName="com.example.android.bugbox.MainActivity"/>
         <activity
             android:name=".ARActivity"
             android:parentActivityName="com.example.android.bugbox.BugsActivity"/>
@@ -41,6 +43,8 @@
         <service
             android:name="com.example.android.bugbox.services.DownloadBugIntentService"
             android:exported="false"/>
+        <receiver
+            android:name=".services.GeofenceBroadcastReceiver"/>
 
     </application>
 

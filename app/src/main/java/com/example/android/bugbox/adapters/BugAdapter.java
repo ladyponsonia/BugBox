@@ -57,11 +57,16 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
         //display data from cursor
         String bugName = mCursor.getString(mCursor.getColumnIndex(BugEntry.COLUMN_NAME));
         String bugThumbUrl = mCursor.getString(mCursor.getColumnIndex(BugEntry.COLUMN_THUMBNAIL));
+        int bugId = mCursor.getInt(mCursor.getColumnIndex(BugEntry._ID ));
 
-        Log.d(TAG, bugName + " " + bugThumbUrl );
-        //set tag. will be used to delete item
-        holder.itemView.setTag(position);
+        Log.d(TAG, bugName + " " + bugThumbUrl + " " + bugId );
 
+        //set id if not empty
+        if (bugId != 0) {
+            //holder.mId = bugId;
+            //set tag. will be used to delete item
+            holder.itemView.setTag(bugId);
+        }
 
         //set name if not empty
         if (!bugName.isEmpty()) {
@@ -100,19 +105,22 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
 
             public ImageView mImage;
             public TextView mName;
+            //public int mId;
 
             public BugViewHolder(View itemView) {
                 super(itemView);
                 mImage = itemView.findViewById(R.id.bug_iv);
                 mName = itemView.findViewById(R.id.bug_tv);
+                //mId = 0;
 
                 itemView.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View view) {
-                int adapterPosition = getAdapterPosition();
-                mClickHandler.onClick(adapterPosition);
+                int id = (int) view.getTag();
+                Log.d(TAG, String.valueOf(id));
+                mClickHandler.onClick(id);
             }
         }
 
