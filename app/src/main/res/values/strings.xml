@@ -7,7 +7,7 @@
     <string name="map_tab_name">COLLECT</string>
     <string name="mybugs_tab_name">MY BUGS</string>
     <string name="notification_title">CATCH THIS BUG!</string>
-    <string name="notification_text">You\'ve found a</string>
+    <string name="notification_text">You\'ve found a \u0020</string>
     <string name="notification_channel_name">BUG_NOTIFICATIONS</string>
     <string name="notification_channel_description">Notifications channel for BugBox</string>
     <string name="collect_action_text">COLLECT</string>

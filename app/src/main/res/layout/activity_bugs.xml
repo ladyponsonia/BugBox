@@ -7,17 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--Tabs layout with help from https://www.truiton.com/2015/06/android-tabs-example-fragments-viewpager/
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/bugs_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:elevation="6dp"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
-
+    <!--Tabs layout with help from https://www.truiton.com/2015/06/android-tabs-example-fragments-viewpager/-->
     <android.support.design.widget.TabLayout
         android:id="@+id/bugs_tab_layout"
         android:layout_width="match_parent"
