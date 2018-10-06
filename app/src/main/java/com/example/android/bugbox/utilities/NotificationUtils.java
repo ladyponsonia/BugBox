@@ -11,10 +11,9 @@ import android.support.v4.app.NotificationCompat.Action;
 import android.util.Log;
 
 import com.example.android.bugbox.BugsActivity;
-import com.example.android.bugbox.MainActivity;
 import com.example.android.bugbox.R;
 import com.example.android.bugbox.model.Bug;
-import com.example.android.bugbox.services.DownloadBugIntentService;
+import com.example.android.bugbox.background.DownloadBugIntentService;
 
 public class NotificationUtils {
 
@@ -104,14 +103,6 @@ public class NotificationUtils {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public static void executeAction(Context context, String action, String polyAssetId) {
-        if (ACTION_DOWNLOAD_BUG.equals(action) && polyAssetId != null) {
-            DownloadBugUtils.downloadBug(context, polyAssetId);
-            NotificationUtils.clearAllNotifications(context);
-        } else if (ACTION_DISMISS.equals(action)) {
-            NotificationUtils.clearAllNotifications(context);
-        }
-    }
 
     // clear all notifications
     public static void clearAllNotifications(Context context) {

@@ -8,6 +8,34 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bugs_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/rv_padding" />
+
+    <LinearLayout
+        android:id="@+id/no_bugs_lyt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/no_bugs_image"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_bugs_text"
+            android:textSize="@dimen/instructions_text_size"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="@color/gray_dk"
+            android:padding="@dimen/bug_image_padding_horizontal"/>
+
+
+
+    </LinearLayout>
 
 </FrameLayout>

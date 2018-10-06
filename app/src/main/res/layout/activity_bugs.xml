@@ -13,13 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/gray_lt"
-        android:elevation="6dp"
+        android:elevation="@dimen/tablayout_elevation"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:tabIndicatorColor="@color/colorSecondaryLight"
-        app:tabIndicatorHeight="4dp"
+        app:tabIndicatorHeight="@dimen/tab_indicator_height"
         app:tabTextColor="@color/colorPrimaryDark"
-        app:tabSelectedTextColor="@color/colorSecondary"/>
+        app:tabSelectedTextColor="@color/colorSecondary"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"/>
 
     <com.example.android.bugbox.adapters.LockableViewPager
         android:id="@+id/fragments_pager"

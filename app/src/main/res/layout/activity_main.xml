@@ -1,53 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/colorPrimary">
+    android:id="@+id/instructions_scrollview"
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true">
 
-    <ImageView
-        android:id="@+id/logo_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/bugbox_logo_negative"
-        android:background="@android:color/transparent"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/instructions_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/instructions"
-        app:layout_constraintEnd_toEndOf="@+id/logo_iv"
-        app:layout_constraintStart_toStartOf="@+id/logo_iv"
-        app:layout_constraintTop_toBottomOf="@+id/logo_iv"
-        android:textColor="@color/white"/>
+        <ImageView
+            android:id="@+id/logo_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/logo_padding"
+            app:layout_constraintBottom_toTopOf="@+id/instructions_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideline2"
+            app:srcCompat="@drawable/bugbox_logo_negative" />
+
+        <TextView
+            android:id="@+id/instructions_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/instructions_padding"
+            android:text="@string/instructions"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/instructions_text_size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/startButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/logo_iv" />
 
 
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/start_button_margin"
+            android:background="@drawable/start_button_bg"
+            android:onClick="startBugsActivity"
+            android:paddingHorizontal="@dimen/start_button_padding"
+            android:text="@string/start_button_text"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/instructions_tv" />
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/instructions_tv"
-        app:layout_constraintStart_toStartOf="@+id/instructions_tv"
-        app:layout_constraintTop_toBottomOf="@+id/instructions_tv"
-        app:srcCompat="@drawable/start_button_bg"
-        android:text="@string/start_button_text"
-        android:onClick="startBugsActivity"
-        android:textColor="@color/white"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintGuide_end="@dimen/instructions_guides"
+            app:layout_constraintTop_toBottomOf="@+id/startButton" />
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/logo_iv"
+            app:layout_constraintGuide_begin="@dimen/instructions_guides"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

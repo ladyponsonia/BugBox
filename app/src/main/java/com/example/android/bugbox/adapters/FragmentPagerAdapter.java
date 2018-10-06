@@ -48,6 +48,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return mNumOfTabs;
     }
 
+
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {

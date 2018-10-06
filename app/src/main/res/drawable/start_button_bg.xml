@@ -4,6 +4,6 @@
     <solid android:color="@color/colorSecondary" />
 
     <corners
-        android:radius="8dp" />
+        android:radius="@dimen/start_button_corners_radius" />
 
 </shape>

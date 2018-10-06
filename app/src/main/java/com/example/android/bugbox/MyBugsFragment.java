@@ -1,7 +1,10 @@
 package com.example.android.bugbox;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
 import android.support.v4.content.CursorLoader;
@@ -17,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.android.bugbox.adapters.BugAdapter;
 import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
@@ -27,13 +31,16 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     private View mRootview;
     private RecyclerView mBugsRV;
-    private BugAdapter mBugAdapter;
+    private static BugAdapter mBugAdapter;
     private LayoutManager mLayoutManager;
+    private LinearLayout mNoDataLayout;
 
+    private final String TAG = this.getClass().getSimpleName();
 
     private static final int DB_QUERY_LOADER_ID = 888;
     public static final String BUG_ID = "bug-id";
-    private final String TAG = this.getClass().getSimpleName();
+    public static final String BUG_NUMBER_KEY = "number-of-bugs";
+
 
 
     public MyBugsFragment() {
@@ -50,8 +57,9 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mRootview = inflater.inflate(R.layout.fragment_my_bugs, container, false);
+        mNoDataLayout = mRootview.findViewById(R.id.no_bugs_lyt);
         setBugAdapter();
-        //db query for mybugs recycler view
+        //db query to get data for mybugs recycler view
         getActivity().getSupportLoaderManager().initLoader(DB_QUERY_LOADER_ID, null, this);
 
         // Add a touch helper to swipe left to delete an item.
@@ -89,19 +97,6 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         super.onDetach();
     }
 
-    private void setBugAdapter() {
-        mBugsRV = mRootview.findViewById(R.id.bugs_rv);
-        mBugAdapter = new BugAdapter(getActivity(), this );
-        //1 column for phone, 3 column for tablet
-        int columnsNum = 2;
-        /*if (getResources().getConfiguration().screenWidthDp >= 700){
-            columnsNum = 3;
-        }*/
-        mLayoutManager = new GridLayoutManager(getActivity(),columnsNum );
-        mBugsRV.setLayoutManager(mLayoutManager);
-        mBugsRV.setAdapter(mBugAdapter);
-    }
-
     @Override
     public void onClick(int id) {
         Intent ARIntent = new Intent(getActivity(), ARActivity.class);
@@ -127,13 +122,15 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
     public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
         Log.d (TAG, "onLoadFinished ") ;
         mBugAdapter.swapCursor(newCursor);
-        /*if there's no data show error msg
-        if (mBugsList == null) {
-            errorTV.setText(R.string.no_data);
-            showErrorMsg(true);
+        saveNumberOfBugs();
+        //if there's no data show no bugs msg
+        if (mBugAdapter.getItemCount()==0) {
+            mNoDataLayout.setVisibility(View.VISIBLE);
+            mBugsRV.setVisibility(View.INVISIBLE);
         } else {
-            showErrorMsg(false);
-        }*/
+            mNoDataLayout.setVisibility(View.INVISIBLE);
+            mBugsRV.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -142,6 +139,21 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         Log.d (TAG, "onLoaderReset");
     }
 
+
+    private void setBugAdapter() {
+        mBugsRV = mRootview.findViewById(R.id.bugs_rv);
+        mBugAdapter = new BugAdapter(getActivity(), this );
+        //2 column for portrait, 3 column for landscape
+        int columnsNum = 2;
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            columnsNum = 3;
+        }
+        mLayoutManager = new GridLayoutManager(getActivity(),columnsNum );
+        mBugsRV.setLayoutManager(mLayoutManager);
+        mBugsRV.setAdapter(mBugAdapter);
+    }
+
+
     //db re-query for mybugs recycler view
     // to be called from activity when new bug is added to db
     public void refreshData(){
@@ -149,5 +161,18 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         getActivity().getSupportLoaderManager().restartLoader(DB_QUERY_LOADER_ID, null, this );
     }
 
+    //saves number of bugs in rv to shared preferences
+    private void saveNumberOfBugs(){
+        int numberOfBugs;
+        if (mBugAdapter != null) {
+            numberOfBugs = mBugAdapter.getItemCount();
+        }else{
+            numberOfBugs = 0;
+        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(BUG_NUMBER_KEY, numberOfBugs);
+        editor.commit();
 
+    }
 }

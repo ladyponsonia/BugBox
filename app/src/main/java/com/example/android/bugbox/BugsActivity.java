@@ -1,16 +1,16 @@
 package com.example.android.bugbox;
 
+import android.content.IntentFilter;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 
 import com.example.android.bugbox.adapters.FragmentPagerAdapter;
 import com.example.android.bugbox.adapters.LockableViewPager;
-import com.example.android.bugbox.services.Geofencing;
-import com.example.android.bugbox.utilities.NotificationUtils;
+import com.example.android.bugbox.background.BugDownloadedBroadcastReceiver;
+import com.example.android.bugbox.utilities.Geofencing;
 import com.google.android.gms.location.LocationServices;
 
 public class BugsActivity extends AppCompatActivity{
@@ -21,6 +21,7 @@ public class BugsActivity extends AppCompatActivity{
     private TabLayout mTabLayout;
     private static LockableViewPager mViewPager;
     private Geofencing mGeofencing;
+    private BugDownloadedBroadcastReceiver mReceiver;
 
     public static final String[] tabTitles = new String[2];
 
@@ -34,16 +35,12 @@ public class BugsActivity extends AppCompatActivity{
         tabTitles[0] = getResources().getString(R.string.map_tab_name);
         tabTitles[1] = getResources().getString(R.string.mybugs_tab_name);
 
-        /*set toolbar
-        Toolbar toolbar = findViewById(R.id.bugs_toolbar);
-        setSupportActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);*/
 
         //tabs with help from https://www.truiton.com/2015/06/android-tabs-example-fragments-viewpager/
         //and https://medium.com/@droidbyme/android-material-design-tabs-tab-layout-with-swipe-884085ae80ff
         mTabLayout = findViewById(R.id.bugs_tab_layout);
-        mTabLayout.addTab(mTabLayout.newTab().setText(R.string.map_tab_name));
-        mTabLayout.addTab(mTabLayout.newTab().setText(R.string.mybugs_tab_name));
+        mTabLayout.addTab(mTabLayout.newTab());
+        mTabLayout.addTab(mTabLayout.newTab());
 
         mViewPager = findViewById(R.id.fragments_pager);
         mAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount());
@@ -55,6 +52,14 @@ public class BugsActivity extends AppCompatActivity{
         mGeofencing = new Geofencing(this, LocationServices.getGeofencingClient(this));
         mGeofencing.createGeofenceList();
         mGeofencing.registerAllGeofences(BugsActivity.this);
+
+        //register receiver to get notified when bug is done downloading
+        // with help from https://www.101apps.co.za/articles/using-an-intentservice-to-do-background-work.html
+        mReceiver = new BugDownloadedBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
+        intentFilter.addAction(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+        localBroadcastManager.registerReceiver(mReceiver, intentFilter);
     }
 
 
@@ -62,6 +67,14 @@ public class BugsActivity extends AppCompatActivity{
     protected void onRestart() {
         super.onRestart();
         refreshMyBugs();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregister receiver
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+        localBroadcastManager.unregisterReceiver(mReceiver);
     }
 
     //refresh myBugs recycler view

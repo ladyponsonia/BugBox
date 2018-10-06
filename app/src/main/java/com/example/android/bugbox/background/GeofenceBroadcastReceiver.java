@@ -1,4 +1,4 @@
-package com.example.android.bugbox.services;
+package com.example.android.bugbox.background;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,15 +12,15 @@ import com.example.android.bugbox.utilities.NotificationUtils;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 //with help from https://stackoverflow.com/questions/33074048/how-to-retrieve-the-latitude-and-longitude-of-a-triggered-geofence-from-public-l
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
+    private final String TAG = this.getClass().getSimpleName();
+    private static final float ERROR_MARGIN =  0.0001f;;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("BROADCAST RECEIVER", "OnReceive called");
+        Log.d(TAG, "OnReceive called");
 
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         // Get the transition type.
@@ -30,7 +30,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             Location location = geofencingEvent.getTriggeringLocation();
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
-            Log.d("BROADCAST RECEIVER", "Lat/Lon: " + latitude + ", " +longitude);
+            Log.d(TAG, "Lat/Lon: " + latitude + ", " +longitude);
 
 
             //find the bug that triggered the geofence transition
@@ -40,17 +40,16 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                 float lng = bug.getLon();
 
                 //compare values with a margin of error
-                float error = 0.00001f;
-                Log.d("BROADCAST RECEIVER", "Lat: " + (Math.abs(lat - latitude) < error));
-                Log.d("BROADCAST RECEIVER", "Lon: " + (Math.abs(lng - longitude) < error));
-                if (Math.abs(lat - latitude) < error && Math.abs(lng - longitude) < error){
+                Log.d(TAG, "Lat: " + (Math.abs(lat - latitude) < ERROR_MARGIN));
+                Log.d(TAG, "Lon: " + (Math.abs(lng - longitude) < ERROR_MARGIN));
+                if (Math.abs(lat - latitude) < ERROR_MARGIN && Math.abs(lng - longitude) < ERROR_MARGIN){
                     bugFound = bug;
-                    Log.d ("BROADCAST RECEIVER", "bugFound:"+ bugFound);
+                    Log.d (TAG, "bugFound:"+ bugFound);
                 }
             }
             //send notification
             if(bugFound != null){
-                Log.d ("BROADCAST RECEIVER", "sendNotification called");
+                Log.d (TAG, "sendNotification called");
                 NotificationUtils.sendNotification(context, bugFound);
             }
 

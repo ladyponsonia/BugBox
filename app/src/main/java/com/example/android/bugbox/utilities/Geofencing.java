@@ -1,4 +1,4 @@
-package com.example.android.bugbox.services;
+package com.example.android.bugbox.utilities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -11,16 +11,13 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.example.android.bugbox.MainActivity;
+import com.example.android.bugbox.background.GeofenceBroadcastReceiver;
 import com.example.android.bugbox.model.Bug;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;

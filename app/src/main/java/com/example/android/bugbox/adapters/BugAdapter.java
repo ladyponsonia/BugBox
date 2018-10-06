@@ -63,7 +63,6 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
 
         //set id if not empty
         if (bugId != 0) {
-            //holder.mId = bugId;
             //set tag. will be used to delete item
             holder.itemView.setTag(bugId);
         }
@@ -78,14 +77,14 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
         if (bugThumbUrl.isEmpty()) {
             Log.d(TAG, "using default image");
             Picasso.with(mContext)
-                    .load(R.drawable.ic_launcher_foreground)
-                    .resize(300, 300)
+                    .load(R.drawable.placeholder_image)
+                    .resize(600, 600)
                     .into(holder.mImage);
         }else {
             Picasso.with(mContext)
                     .load(bugThumbUrl)
-                    .resize(350,350)
-                    .placeholder(R.mipmap.ic_launcher)
+                    .resize(600,600)
+                    .placeholder(R.drawable.placeholder_image)
                     .into(holder.mImage);
         }
     }
@@ -105,13 +104,11 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
 
             public ImageView mImage;
             public TextView mName;
-            //public int mId;
 
             public BugViewHolder(View itemView) {
                 super(itemView);
                 mImage = itemView.findViewById(R.id.bug_iv);
                 mName = itemView.findViewById(R.id.bug_tv);
-                //mId = 0;
 
                 itemView.setOnClickListener(this);
             }
@@ -125,7 +122,7 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
         }
 
     public void swapCursor(Cursor newCursor) {
-        // Always close the previous mCursor first
+        //close the previous mCursor
         if (mCursor != null) mCursor.close();
         mCursor = newCursor;
         if (newCursor != null) {
@@ -133,6 +130,5 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
             this.notifyDataSetChanged();
         }
     }
-
 
 }

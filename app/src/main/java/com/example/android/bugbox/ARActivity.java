@@ -29,11 +29,6 @@ public class ARActivity extends AppCompatActivity implements LoaderManager.Loade
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
 
-        /*set toolbar
-        Toolbar toolbar = findViewById(R.id.bugs_toolbar);
-        setSupportActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);*/
-
         Intent intent = getIntent();
         mId = intent.getExtras().getInt(MyBugsFragment.BUG_ID);
         Log.d("AR ACTIVITY", String.valueOf(mId));

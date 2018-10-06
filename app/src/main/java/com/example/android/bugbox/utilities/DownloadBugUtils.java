@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.android.bugbox.BugsActivity;
 import com.example.android.bugbox.BuildConfig;
 import com.example.android.bugbox.MyBugsFragment;
+import com.example.android.bugbox.background.BugDownloadedBroadcastReceiver;
 import com.example.android.bugbox.model.Bug;
 import com.example.android.bugbox.model.Bug3D;
 import com.example.android.bugbox.network.GetDataService;
@@ -40,20 +41,6 @@ public class DownloadBugUtils {
                 //download and save 3D asset
 
                 //save file locations to db
-
-                //refresh myBugs recycler view and show MyBugs tab
-               //BugsActivity.refreshMyBugs();
-               Intent myBugsIntent = new Intent(context, BugsActivity.class);
-               context.startActivity(myBugsIntent);
-               //with help from https://stackoverflow.com/questions/11962268/viewpager-setcurrentitempageid-true-does-not-smoothscroll
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        BugsActivity.switchToMyBugsTab();
-                    }
-                }, 300);
-
-
             }
 
             @Override
