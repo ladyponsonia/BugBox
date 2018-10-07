@@ -116,6 +116,8 @@ public class ARActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
 
+        mCursor =null;
+
         //get selected bug id
         Intent intent = getIntent();
         mId = intent.getExtras().getInt(MyBugsFragment.BUG_ID);
@@ -282,11 +284,6 @@ public class ARActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus);
-    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {

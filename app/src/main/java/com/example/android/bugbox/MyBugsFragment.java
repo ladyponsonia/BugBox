@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.android.bugbox.adapters.BugAdapter;
 import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
@@ -122,7 +123,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
     public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
         Log.d (TAG, "onLoadFinished ") ;
         mBugAdapter.swapCursor(newCursor);
-        saveNumberOfBugs();
+        saveNumberOfBugs();//saves number to display in app widget
         //if there's no data show no bugs msg
         if (mBugAdapter.getItemCount()==0) {
             mNoDataLayout.setVisibility(View.VISIBLE);
@@ -130,6 +131,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         } else {
             mNoDataLayout.setVisibility(View.INVISIBLE);
             mBugsRV.setVisibility(View.VISIBLE);
+            //Toast.makeText(getContext(), R.string.delete_bug_instructions, Toast.LENGTH_LONG).show();
         }
     }
 
