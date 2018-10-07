@@ -2,23 +2,14 @@ package com.example.android.bugbox.utilities;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.android.bugbox.model.Bug;
+import com.example.android.bugbox.R;
 import com.example.android.bugbox.model.Bug3D;
-import com.example.android.bugbox.model.BugFormats;
-import com.example.android.bugbox.model.BugResources;
-import com.example.android.bugbox.model.BugRoot;
-import com.example.android.bugbox.model.BugThumbnail;
-
 import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContentProviderUtils {
 
@@ -41,9 +32,10 @@ public class ContentProviderUtils {
 
         Uri uri = context.getContentResolver().insert(BugEntry.CONTENT_URI, contentValues );
 
-        // Display the URI that's returned with a Toast
+        // Log URI that's returned and notify user with a Toast
+        String msg = context.getString(R.string.bug_inserted_toast_part1) + bug.getName() + "";
         if(uri != null) {
-            Toast.makeText(context, uri.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
             Log.d("INSERT BUG", uri.toString());
         }
     }

@@ -3,6 +3,7 @@ package com.example.android.bugbox.utilities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.UserManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +15,9 @@ import com.example.android.bugbox.model.Bug;
 import com.example.android.bugbox.model.Bug3D;
 import com.example.android.bugbox.network.GetDataService;
 import com.example.android.bugbox.network.RetrofitClientInstance;
+import com.google.android.gms.common.Feature;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,8 +27,8 @@ public class DownloadBugUtils {
 
     private static final String POLY_API_KEY = BuildConfig.POLY_API_KEY;
 
-    //download bug
-    public static void downloadBug(final Context context, String polyAssetId){
+    //download bug and insert into db
+    public static void downloadBug(final Context context, String polyAssetId) {
         Log.d("SERVICE", "downloadBug called");
 
         //Create handle for the RetrofitInstance interface
@@ -36,21 +40,16 @@ public class DownloadBugUtils {
             public void onResponse(Call<Bug3D> call, Response<Bug3D> response) {
                 //save downloaded bug to db
                 Bug3D bug = response.body();
-                ContentProviderUtils.insertBug(bug, context);
-
-                //download and save 3D asset
-
-                //save file locations to db
+                ContentProviderUtils.insertBug(bug, context);//asynctask?
             }
 
             @Override
             public void onFailure(Call<Bug3D> call, Throwable t) {
                 Toast.makeText(context, "Connection error", Toast.LENGTH_LONG).show();
-                t.printStackTrace ();
+                t.printStackTrace();
             }
 
         });
-
     }
 
 }

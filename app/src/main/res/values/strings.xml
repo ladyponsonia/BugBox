@@ -4,15 +4,22 @@
         2. Get within 100ft of a bug to catch it.\n\n
         3. Caught bugs are added to your collection. Click on one to study it with Augmented Reality!</string>
     <string name="start_button_text">START</string>
+
     <string name="map_tab_name">COLLECT</string>
     <string name="mybugs_tab_name">MY BUGS</string>
+    <string name="no_bugs_text">No bugs yet.\n Go to the map tab to find some.</string>
+
     <string name="notification_title">CATCH THIS BUG!</string>
     <string name="notification_text">You\'ve found a \u0020</string>
     <string name="notification_channel_name">Bug Proximity</string>
     <string name="notification_channel_description">Notifications sent when a bug is available for download</string>
     <string name="collect_action_text">COLLECT</string>
     <string name="dismiss_action_text">DISMISS</string>
-    <string name="no_bugs_text">No bugs yet.\n Go to the map tab to find some.</string>
+
+    <string name="bug_inserted_toast_part1">Added \u0020</string>
+    <string name="bug_inserted_toast_part2">\u0020 to bugs collection.</string>
+
     <string name="add_widget">Add widget</string>
     <string name="widget_number_content_description">number of bugs collected</string>
+
 </resources>

@@ -85,7 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setMyLocationEnabled(true);
 
         //get bugs data
-        ArrayList<Bug> bugsList = MainActivity.bugsList;
+        ArrayList<Bug> bugsList = BugsActivity.bugsList;
 
         //add marker on map for each bug on the list
         for (Bug bug : bugsList){

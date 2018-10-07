@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
 
-import com.example.android.bugbox.MainActivity;
+import com.example.android.bugbox.BugsActivity;
 import com.example.android.bugbox.model.Bug;
 import com.example.android.bugbox.utilities.NotificationUtils;
 import com.google.android.gms.location.Geofence;
@@ -16,35 +16,33 @@ import com.google.android.gms.location.GeofencingEvent;
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
     private final String TAG = this.getClass().getSimpleName();
-    private static final float ERROR_MARGIN =  0.0001f;;
+    private static final float ERROR_MARGIN = 50;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "OnReceive called");
 
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
-        // Get the transition type.
+        // Get the transition type and location that triggered the event
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-
-            Location location = geofencingEvent.getTriggeringLocation();
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            Log.d(TAG, "Lat/Lon: " + latitude + ", " +longitude);
-
+            Location enteredLocation = geofencingEvent.getTriggeringLocation();
 
             //find the bug that triggered the geofence transition
+            //with help from https://stackoverflow.com/questions/17983865/making-a-location-object-in-android-with-latitude-and-longitude-values
             Bug bugFound = null;
-            for (Bug bug:MainActivity.bugsList){
-                float lat = bug.getLat();
-                float lng = bug.getLon();
+            for (Bug bug: BugsActivity.bugsList){
+                //make new location object
+                Location bugLocation = new Location("");
+                bugLocation.setLatitude(bug.getLat());
+                bugLocation.setLongitude(bug.getLon());
 
-                //compare values with a margin of error
-                Log.d(TAG, "Lat: " + (Math.abs(lat - latitude) < ERROR_MARGIN));
-                Log.d(TAG, "Lon: " + (Math.abs(lng - longitude) < ERROR_MARGIN));
-                if (Math.abs(lat - latitude) < ERROR_MARGIN && Math.abs(lng - longitude) < ERROR_MARGIN){
+                float distanceInMeters =  bugLocation.distanceTo(enteredLocation);
+                Log.d(TAG, "Distance in meters to " + bug.getName() +": " + distanceInMeters);
+                if (distanceInMeters<ERROR_MARGIN){
                     bugFound = bug;
                     Log.d (TAG, "bugFound:"+ bugFound);
+                    break;
                 }
             }
             //send notification

@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.example.android.bugbox.MainActivity;
+import com.example.android.bugbox.BugsActivity;
 import com.example.android.bugbox.background.GeofenceBroadcastReceiver;
 import com.example.android.bugbox.model.Bug;
 import com.google.android.gms.location.Geofence;
@@ -31,7 +31,7 @@ public class Geofencing {
     private static final long GEOFENCE_TIMEOUT = 60480000; // 1 week
     private static final int ACCESS_FINE_LOCATON_CODE = 444;
 
-    private List<Geofence> mGeofenceList;
+    public List<Geofence> mGeofenceList;
     private PendingIntent mGeofencePendingIntent;
     private GeofencingClient mGeofencingClient;
     private Context mContext;
@@ -43,9 +43,9 @@ public class Geofencing {
         mGeofenceList = new ArrayList<>();
     }
 
-    //create list of geofences using data from buglist in main activity
+    //create list of geofences using data from buglist in bugs activity
     public void createGeofenceList() {
-        ArrayList<Bug> bugList = MainActivity.bugsList;
+        ArrayList<Bug> bugList = BugsActivity.bugsList;
         mGeofenceList = new ArrayList<>();
         for (int i = 0; i < bugList.size(); i++) {
             String requestId = String.valueOf(i);
