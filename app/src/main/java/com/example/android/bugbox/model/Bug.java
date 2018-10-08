@@ -6,13 +6,15 @@ package com.example.android.bugbox.model;
 public class Bug {
 
     private String mName;
+    private String mInfo;
     private String mPolyAssetID;
     private float mGfLat;
     private float mGfLon;
     private float mGfRadius;
 
-    public Bug (String name, String polyAssetId, float lat, float lon, float radius){
+    public Bug (String name, String info, String polyAssetId, float lat, float lon, float radius){
         this.mName = name;
+        this.mInfo = info;
         this.mPolyAssetID = polyAssetId;
         this.mGfLat = lat;
         this.mGfLon = lon;
@@ -25,6 +27,14 @@ public class Bug {
 
     public void setName(String name) {
         mName = name;
+    }
+
+    public String getInfo(){
+        return mInfo;
+    }
+
+    public void setInfo(String info) {
+        mInfo = info;
     }
 
     public String getPolyAssetID(){

@@ -25,5 +25,14 @@
     <string name="add_widget">Add widget</string>
     <string name="widget_number_content_description">number of bugs collected</string>
 
+    <!--Bug data-->
+    <string name="stag_beetle_name">Stag beetle</string>
+    <string name="stag_beetle_info">The most distinctive feature of the stag beetle is its long antler-like pincers which protrude from the head.</string>
+    <string name="anaconda_name">Anaconda</string>
+    <string name="anaconda_info">The common or green anaconda is the largest snake in the world by weight, and the second longest.</string>
+    <string name="ladybug_name">Ladybug</string>
+    <string name="ladybug_info">Its scientific name is Coccinellidae which is derived from the Latin word coccineus meaning \"scarlet\"</string>
+    <string name="hornet_name">Hornet</string>
+    <string name="hornet_info">Wasps native to North America are commonly referred to as hornets but are actually yellowjackets, their close relatives.</string>
 
 </resources>

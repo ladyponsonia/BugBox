@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/map_info_padding">
+
+    <TextView
+        android:id="@+id/map_bug_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/map_info_title_padding"
+        android:textColor="@color/colorSecondary"
+        android:textStyle="bold"
+        android:textSize="@dimen/instructions_text_size"/>
+
+    <TextView
+        android:id="@+id/map_bug_info"
+        android:layout_width="@dimen/map_info_width"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray_dk" />
+
+</LinearLayout>

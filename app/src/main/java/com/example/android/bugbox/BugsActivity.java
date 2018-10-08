@@ -7,6 +7,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android.bugbox.adapters.FragmentPagerAdapter;
 import com.example.android.bugbox.adapters.LockableViewPager;
@@ -40,10 +41,10 @@ public class BugsActivity extends AppCompatActivity{
         setContentView(R.layout.activity_bugs);
 
         //initialize dummy bug data
-        bugsList.add( new Bug("Beetle","4yufxgZ1QQ2", 33.930277f , -118.434982f , 50.0f));
-        bugsList.add( new Bug("Anaconda","1pi9DfAbsz0", 33.920791f , -118.413011f , 50.0f));
-        bugsList.add( new Bug("Ladybug","4K7V5f9ntfu", 33.969689f , -118.434464f , 50.0f));
-        bugsList.add( new Bug("Hornet","6h7-AWppj5e",33.930527f, -118.423598f, 100.0f));
+        bugsList.add( new Bug(getString(R.string.stag_beetle_name), getString(R.string.stag_beetle_info),"4yufxgZ1QQ2", 33.930277f , -118.434982f , 50.0f));
+        bugsList.add( new Bug(getString(R.string.anaconda_name), getString(R.string.anaconda_info),"1pi9DfAbsz0", 33.920791f , -118.413011f , 50.0f));
+        bugsList.add( new Bug(getString(R.string.ladybug_name), getString(R.string.ladybug_info),"4K7V5f9ntfu", 33.969689f , -118.434464f , 50.0f));
+        bugsList.add( new Bug(getString(R.string.hornet_name), getString(R.string.hornet_info),"6h7-AWppj5e",33.930527f, -118.423598f, 100.0f));
 
         //create notification channel
         NotificationUtils.createNotificationChannel(this);
@@ -65,20 +66,30 @@ public class BugsActivity extends AppCompatActivity{
         mViewPager.setSwipeable(false);
         mTabLayout.setupWithViewPager(mViewPager);
 
+        //if myBugs tab selected show delete instructions toast
+        //with help from https://stackoverflow.com/questions/31172729/how-to-get-current-selected-tab-index-in-tablayout
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+            @Override
+            public void onTabSelected(TabLayout.Tab tab){
+                int position = tab.getPosition();
+                if(position == 1){
+                    Toast.makeText(BugsActivity.this, R.string.delete_bug_instructions, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
         //register geofences
         mGeofencing = new Geofencing(this, LocationServices.getGeofencingClient(this));
         mGeofencing.createGeofenceList();
         mGeofencing.registerAllGeofences(BugsActivity.this);
-        /*final Handler handler = new Handler();
-        final Runnable r = new Runnable() {
-            public void run() {
-
-            }
-        };
-        handler.postDelayed(r, 1000);*/
-
-
-
 
         //register receiver to get notified when bug is done downloading
         // with help from https://www.101apps.co.za/articles/using-an-intentservice-to-do-background-work.html

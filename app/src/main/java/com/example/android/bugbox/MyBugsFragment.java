@@ -30,13 +30,13 @@ import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
 public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHandler,
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final String TAG = this.getClass().getSimpleName();
+
     private View mRootview;
     private RecyclerView mBugsRV;
     private static BugAdapter mBugAdapter;
     private LayoutManager mLayoutManager;
     private LinearLayout mNoDataLayout;
-
-    private final String TAG = this.getClass().getSimpleName();
 
     private static final int DB_QUERY_LOADER_ID = 888;
     public static final String BUG_ID = "bug-id";
@@ -88,15 +88,6 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         return mRootview;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 
     @Override
     public void onClick(int id) {
@@ -131,7 +122,6 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         } else {
             mNoDataLayout.setVisibility(View.INVISIBLE);
             mBugsRV.setVisibility(View.VISIBLE);
-            //Toast.makeText(getContext(), R.string.delete_bug_instructions, Toast.LENGTH_LONG).show();
         }
     }
 

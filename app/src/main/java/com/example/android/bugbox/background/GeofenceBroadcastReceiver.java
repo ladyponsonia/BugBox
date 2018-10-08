@@ -16,7 +16,7 @@ import com.google.android.gms.location.GeofencingEvent;
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
     private final String TAG = this.getClass().getSimpleName();
-    private static final float ERROR_MARGIN = 50;
+    private static final float ERROR_MARGIN = 50;//meters
 
     @Override
     public void onReceive(Context context, Intent intent) {

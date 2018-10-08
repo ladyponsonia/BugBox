@@ -26,6 +26,8 @@ import retrofit2.Response;
 
 public class DownloadBugUtils {
 
+    private final String TAG = this.getClass().getSimpleName();
+
     private static final String POLY_API_KEY = BuildConfig.POLY_API_KEY;
 
     //download bug and insert into db

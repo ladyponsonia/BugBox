@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.example.android.bugbox.adapters.MapInfoWindow;
 import com.example.android.bugbox.model.Bug;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
  * https://www.journaldev.com/10380/android-google-maps-example-tutorial
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+
+    private final String TAG = this.getClass().getSimpleName();
 
     private static final int ACCESS_FINE_LOCATON_CODE = 444;
 
@@ -61,7 +64,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mProgressBar.setVisibility(View.VISIBLE);
         mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mMapFragment.setUserVisibleHint(false);
-        Log.d("MAPfragment", "onCreateView" + mMapFragment.toString());
 
         //start map
         mMapFragment.getMapAsync(this);
@@ -90,8 +92,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //add marker on map for each bug on the list
         for (Bug bug : bugsList){
             mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(bug.getLat(), bug.getLon())).title(bug.getName()));
+                    .position(new LatLng(bug.getLat(), bug.getLon()))
+                    .title(bug.getName())
+                    .snippet(bug.getInfo()));
+
         }
+        //set custom info window
+        MapInfoWindow mapInfoWindow = new MapInfoWindow(getContext());
+        mMap.setInfoWindowAdapter(mapInfoWindow);
+
         //center camera on 1st bug
         mMap.moveCamera(CameraUpdateFactory
                 .newLatLngZoom(new LatLng(bugsList.get(0).getLat(), bugsList.get(0).getLon()), 12));
@@ -103,7 +112,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
         if (location != null){
-            Log.d("MAP", location.toString());
+            Log.d(TAG, location.toString());
         }
     }
 

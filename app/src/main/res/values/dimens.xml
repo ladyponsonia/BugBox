@@ -3,12 +3,16 @@
     <dimen name="logo_padding">16dp</dimen>
     <dimen name="start_button_margin">16dp</dimen>
     <dimen name="start_button_padding">20dp</dimen>
+    <dimen name="start_button_corners_radius">32dp</dimen>
     <dimen name="instructions_guides">24dp</dimen>
     <dimen name="instructions_text_size">20sp</dimen>
     <dimen name="instructions_padding">48dp</dimen>
 
     <dimen name="tablayout_elevation">6dp</dimen>
     <dimen name="tab_indicator_height">4dp</dimen>
+
+    <dimen name="map_info_padding">8dp</dimen>
+    <dimen name="map_info_width">250dp</dimen>
 
     <dimen name="rv_padding">16dp</dimen>
     <dimen name="bug_image_padding_horizontal">12dp</dimen>
@@ -18,6 +22,6 @@
     <dimen name="widget_circle_diameter">24dp</dimen>
     <dimen name="widget_image_padding">0dp</dimen>
     <dimen name="widget_text_size">16sp</dimen>
-    <dimen name="start_button_corners_radius">32dp</dimen>
+    <dimen name="map_info_title_padding">4dp</dimen>
 
 </resources>

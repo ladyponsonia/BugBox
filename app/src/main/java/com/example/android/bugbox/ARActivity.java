@@ -81,7 +81,7 @@ public class ARActivity extends AppCompatActivity
 
     //variables from PolySampleARCore
     // Scale factor to apply to asset when displaying.
-    private static final float ASSET_SCALE = 0.01f;
+    private static final float ASSET_SCALE = 0.006f;
     // Rendering. The Renderers are created here, and initialized when the GL surface is created.
     private GLSurfaceView surfaceView;
     private boolean installRequested;
@@ -175,6 +175,9 @@ public class ARActivity extends AppCompatActivity
             mPngFilename = data.getString(data.getColumnIndex(BugEntry.COLUMN_TEXTURE_FILENAME));
             mObjUrl = data.getString(data.getColumnIndex(BugEntry.COLUMN_OBJ_URL));
             mPngUrl = data.getString(data.getColumnIndex(BugEntry.COLUMN_TEXTURE_URL));
+        }
+        if(mName != null){
+            setTitle(mName);
         }
         //download files
         requestDataFiles();
