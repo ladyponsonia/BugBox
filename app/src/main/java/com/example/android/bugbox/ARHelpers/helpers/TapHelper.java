@@ -21,7 +21,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-/*All ARHelpers classes copied from Google Poly's PolySampleARCore app*/
+/*All ARHelpers classes copied from Google Poly's PolySampleARCore app*
+this class modified to allow only 1 tap/
+ */
 /**
  * Helper to detect taps using Android GestureDetector, and pass the taps between UI thread and
  * render thread.
@@ -36,22 +38,29 @@ public final class TapHelper implements OnTouchListener {
    * @param context the application's context.
    */
   public TapHelper(Context context) {
-    gestureDetector =
-        new GestureDetector(
-            context,
-            new GestureDetector.SimpleOnGestureListener() {
-              @Override
-              public boolean onSingleTapUp(MotionEvent e) {
-                // Queue tap if there is space. Tap is lost if queue is full.
-                queuedSingleTaps.offer(e);
-                return true;
-              }
 
-              @Override
-              public boolean onDown(MotionEvent e) {
-                return true;
-              }
-            });
+        gestureDetector =
+                new GestureDetector(
+                        context,
+                        new GestureDetector.SimpleOnGestureListener() {
+                            boolean alreadyTapped = false;/*added variable to allow only 1 tap, so only 1 bug can be
+                            added at a time*/
+                            @Override
+                            public boolean onSingleTapUp(MotionEvent e) {
+                                // Queue tap if there is space. Tap is lost if queue is full.
+                                if (!alreadyTapped) {
+                                    queuedSingleTaps.offer(e);
+                                    alreadyTapped = true;
+                                }
+                                return true;
+                            }
+
+                            @Override
+                            public boolean onDown(MotionEvent e) {
+                                return true;
+                            }
+                        });
+
   }
 
   /**
@@ -60,7 +69,7 @@ public final class TapHelper implements OnTouchListener {
    * @return if a tap was queued, a MotionEvent for the tap. Otherwise null if no taps are queued.
    */
   public MotionEvent poll() {
-    return queuedSingleTaps.poll();
+      return queuedSingleTaps.poll();
   }
 
   @Override

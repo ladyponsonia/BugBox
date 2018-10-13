@@ -13,11 +13,12 @@ import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
 
 public class ContentProviderUtils {
 
-    public static void insertBug (Bug3D bug, Context context){
+    public static void insertBug (Bug3D bug, Context context, float scale){
 
         //add bug from json response to db
         ContentValues contentValues = new ContentValues();
         contentValues.put(BugEntry.COLUMN_POLY_ASSET_ID, bug.getPolyAssetId());
+        contentValues.put(BugEntry.COLUMN_SCALE, scale);
         contentValues.put(BugEntry.COLUMN_NAME, bug.getName());
         contentValues.put(BugEntry.COLUMN_AUTHOR_NAME, bug.getAuthorName());
         contentValues.put(BugEntry.COLUMN_THUMBNAIL, bug.getThumbnail().getUrl());

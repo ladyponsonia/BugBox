@@ -21,6 +21,7 @@ public class BugDbHelper extends SQLiteOpenHelper {
         final String CREATE_TABLE = "CREATE TABLE "  + BugEntry.TABLE_NAME + " (" +
                 BugEntry._ID                + " INTEGER PRIMARY KEY, " +
                 BugEntry.COLUMN_POLY_ASSET_ID + " TEXT NOT NULL, " +
+                BugEntry.COLUMN_SCALE + " REAL, " +
                 BugEntry.COLUMN_NAME  + " TEXT NOT NULL, " +
                 BugEntry.COLUMN_AUTHOR_NAME   + " TEXT, " +
                 BugEntry.COLUMN_OBJ_URL + " TEXT NOT NULL, " +

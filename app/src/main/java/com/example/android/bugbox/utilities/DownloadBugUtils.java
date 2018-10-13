@@ -31,7 +31,7 @@ public class DownloadBugUtils {
     private static final String POLY_API_KEY = BuildConfig.POLY_API_KEY;
 
     //download bug and insert into db
-    public static void downloadBug(final Context context, String polyAssetId) {
+    public static void downloadBug(final Context context, String polyAssetId, final float scale) {
         Log.d("SERVICE", "downloadBug called");
 
         //Create handle for the RetrofitInstance interface
@@ -43,7 +43,7 @@ public class DownloadBugUtils {
                 //save downloaded bug to db
                 Bug3D bug = response.body();
                 if (bug != null) {
-                    ContentProviderUtils.insertBug(bug, context);//asynctask?
+                    ContentProviderUtils.insertBug(bug, context, scale);//asynctask?
                 }else{
                     Toast.makeText(context, R.string.bug_null_text, Toast.LENGTH_LONG).show();
                 }

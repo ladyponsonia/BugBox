@@ -28,6 +28,7 @@ public class BugsActivity extends AppCompatActivity{
     private static LockableViewPager mViewPager;
     private Geofencing mGeofencing;
     private BugDownloadedBroadcastReceiver mReceiver;
+    private boolean mDeleteInstrShown;
 
     public static final String[] tabTitles = new String[2];
 
@@ -41,10 +42,10 @@ public class BugsActivity extends AppCompatActivity{
         setContentView(R.layout.activity_bugs);
 
         //initialize dummy bug data
-        bugsList.add( new Bug(getString(R.string.stag_beetle_name), getString(R.string.stag_beetle_info),"4yufxgZ1QQ2", 33.930277f , -118.434982f , 50.0f));
-        bugsList.add( new Bug(getString(R.string.anaconda_name), getString(R.string.anaconda_info),"1pi9DfAbsz0", 33.920791f , -118.413011f , 50.0f));
-        bugsList.add( new Bug(getString(R.string.ladybug_name), getString(R.string.ladybug_info),"4K7V5f9ntfu", 33.969689f , -118.434464f , 50.0f));
-        bugsList.add( new Bug(getString(R.string.hornet_name), getString(R.string.hornet_info),"6h7-AWppj5e",33.930527f, -118.423598f, 100.0f));
+        bugsList.add( new Bug(getString(R.string.stag_beetle_name), getString(R.string.stag_beetle_info),"4yufxgZ1QQ2",0.006f, 33.930277f , -118.434982f , 50.0f));
+        bugsList.add( new Bug(getString(R.string.anaconda_name), getString(R.string.anaconda_info),"1pi9DfAbsz0", 0.03f, 33.930527f , -118.423598f , 50.0f));
+        bugsList.add( new Bug(getString(R.string.ladybug_name), getString(R.string.ladybug_info),"4K7V5f9ntfu", 0.005f,33.969689f , -118.434464f , 50.0f));
+        bugsList.add( new Bug(getString(R.string.hornet_name), getString(R.string.hornet_info),"6h7-AWppj5e",0.004f,33.920791f, -118.413011f, 100.0f));
 
         //create notification channel
         NotificationUtils.createNotificationChannel(this);
@@ -71,9 +72,13 @@ public class BugsActivity extends AppCompatActivity{
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
             public void onTabSelected(TabLayout.Tab tab){
+                //show delete instructions when MyBugs tab is selected,
+                // if there are bugs in the rv and if the message wasn't already shown
                 int position = tab.getPosition();
-                if(position == 1){
-                    Toast.makeText(BugsActivity.this, R.string.delete_bug_instructions, Toast.LENGTH_SHORT).show();
+                int bugs = MyBugsFragment.mBugAdapter.getItemCount();
+                if(position == 1 && bugs>0 && !mDeleteInstrShown){
+                    Toast.makeText(BugsActivity.this, R.string.delete_bug_instructions, Toast.LENGTH_LONG).show();
+                    mDeleteInstrShown = true;
                 }
             }
 
@@ -122,7 +127,11 @@ public class BugsActivity extends AppCompatActivity{
     }
 
     public static void switchToMyBugsTab(){
-        Log.d("BUGS ACTIVITY", "switchToMyBugsTab called");
+        Log.d("TAG", "switchToMyBugsTab called");
         mViewPager.setCurrentItem(1, true);
+        //scroll to newest bug
+        MyBugsFragment frag = (MyBugsFragment) mAdapter.getFragment(1);
+        frag.scrollToNewBug();
+
     }
 }

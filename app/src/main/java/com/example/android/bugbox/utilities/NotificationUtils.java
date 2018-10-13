@@ -25,6 +25,7 @@ public class NotificationUtils {
     private static final int ACTION_DISMISS_PENDING_INTENT_ID = 205;
     private static final int OPEN_BUGS_PENDING_INTENT_ID = 210;
     public static final String POLY_ASSET_ID_KEY = "poly-asset-id";
+    public static final String SCALE_KEY = "bug-scale";
 
     //create notification channel
     //with help from https://developer.android.com/training/notify-user/build-notification
@@ -85,8 +86,9 @@ public class NotificationUtils {
     private static Action downloadAction(Context context, Bug bug) {
         // Intent to launch DownloadBugIntentService
         Intent downloadBugIntent = new Intent(context, DownloadBugIntentService.class);
-        //send polyAssetId as extra
+        //send polyAssetId and scale as extras
         downloadBugIntent.putExtra(POLY_ASSET_ID_KEY, bug.getPolyAssetID());
+        downloadBugIntent.putExtra(SCALE_KEY, bug.getScale());
         // Set the action of the intent
         downloadBugIntent.setAction(NotificationUtils.ACTION_DOWNLOAD_BUG);
         //Pending intent

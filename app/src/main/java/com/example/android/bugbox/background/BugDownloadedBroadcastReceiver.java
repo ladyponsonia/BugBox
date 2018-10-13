@@ -24,7 +24,6 @@ public class BugDownloadedBroadcastReceiver extends BroadcastReceiver {
 
 
         //start bugs activity and show MyBugs tab
-        //BugsActivity.refreshMyBugs();
         Intent myBugsIntent = new Intent(context, BugsActivity.class);
         context.startActivity(myBugsIntent);
         BugsActivity.switchToMyBugsTab();

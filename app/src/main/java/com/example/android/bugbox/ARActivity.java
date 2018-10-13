@@ -1,6 +1,8 @@
 package com.example.android.bugbox;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
@@ -71,6 +73,7 @@ public class ARActivity extends AppCompatActivity
 
     private int mId;
     private String mName;
+    private float mScale;
     private Cursor mCursor;
     private String mObjUrl;
     private String mPngUrl;
@@ -80,8 +83,6 @@ public class ARActivity extends AppCompatActivity
     private byte[] mPngBytes;
 
     //variables from PolySampleARCore
-    // Scale factor to apply to asset when displaying.
-    private static final float ASSET_SCALE = 0.006f;
     // Rendering. The Renderers are created here, and initialized when the GL surface is created.
     private GLSurfaceView surfaceView;
     private boolean installRequested;
@@ -125,11 +126,15 @@ public class ARActivity extends AppCompatActivity
         //start loader to get bug info from db
         getSupportLoaderManager().initLoader(DB_QUERY_LOADER_ID, null, this);
 
+        //check connection
+        if (!isOnline(this)) {
+            Toast.makeText(this, R.string.ar_connection_error, Toast.LENGTH_LONG).show();
+        }
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(this);
 
         // Set up tap listener.
-        tapHelper = new TapHelper(this);
+        tapHelper = new TapHelper(this );
         surfaceView.setOnTouchListener(tapHelper);
 
         // Set up renderer.
@@ -150,8 +155,8 @@ public class ARActivity extends AppCompatActivity
     @Override
     public Loader onCreateLoader(int id, Bundle bundle) {
 
-        String[] mProjection = {BugEntry.COLUMN_NAME, BugEntry.COLUMN_OBJ_URL, BugEntry.COLUMN_OBJ_FILENAME,
-                BugEntry.COLUMN_TEXTURE_FILENAME, BugEntry.COLUMN_TEXTURE_URL};
+        String[] mProjection = {BugEntry.COLUMN_SCALE, BugEntry.COLUMN_NAME, BugEntry.COLUMN_OBJ_URL,
+                BugEntry.COLUMN_OBJ_FILENAME, BugEntry.COLUMN_TEXTURE_FILENAME, BugEntry.COLUMN_TEXTURE_URL};
         String mSelection = "_id=?";
         String[] mSelectionArgs = new String[]{String.valueOf(mId)};
 
@@ -170,6 +175,7 @@ public class ARActivity extends AppCompatActivity
 
         //get name and files paths
         if (data != null && data.moveToFirst()) {
+            mScale = data.getFloat(data.getColumnIndex(BugEntry.COLUMN_SCALE));
             mName = data.getString(data.getColumnIndex(BugEntry.COLUMN_NAME));
             mObjFilename = data.getString(data.getColumnIndex(BugEntry.COLUMN_OBJ_FILENAME));
             mPngFilename = data.getString(data.getColumnIndex(BugEntry.COLUMN_TEXTURE_FILENAME));
@@ -181,6 +187,8 @@ public class ARActivity extends AppCompatActivity
         }
         //download files
         requestDataFiles();
+
+        mCursor.close();
     }
 
     @Override
@@ -191,7 +199,7 @@ public class ARActivity extends AppCompatActivity
 
     }
 
-
+    //below code copied from PolySampleARCore with some modifications
     @Override
     protected void onResume() {
         super.onResume();
@@ -393,7 +401,7 @@ public class ARActivity extends AppCompatActivity
 
                 // Update and draw the model.
                 if (virtualObject != null) {
-                    virtualObject.updateModelMatrix(anchorMatrix, ASSET_SCALE * scaleFactor);
+                    virtualObject.updateModelMatrix(anchorMatrix, mScale * scaleFactor);
                     virtualObject.draw(viewmtx, projmtx, colorCorrectionRgba);
 
                     // If we haven't yet showing the attribution toast, do it now.
@@ -511,4 +519,12 @@ public class ARActivity extends AppCompatActivity
             }
         });
     }
+
+    //check internet connection from https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 }

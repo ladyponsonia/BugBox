@@ -7,6 +7,8 @@
 
     <string name="map_tab_name">COLLECT</string>
     <string name="mybugs_tab_name">MY BUGS</string>
+    <string name="directions_toast">Select a marker first, then click on directions</string>
+    <string name="map_error">Map could not be loaded.</string>
     <string name="no_bugs_text">No bugs yet.\n Go to the map tab to find some.</string>
     <string name="delete_bug_instructions">Swipe bug to delete it.</string>
 
@@ -21,6 +23,8 @@
     <string name="bug_download_error">Something went wrong...</string>
     <string name="bug_inserted_toast_part1">Added \u0020</string>
     <string name="bug_inserted_toast_part2">\u0020 to bugs collection.</string>
+
+    <string name="ar_connection_error">You need internet connection to see the bug in AR.</string>
 
     <string name="add_widget">Add widget</string>
     <string name="widget_number_content_description">number of bugs collected</string>

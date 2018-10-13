@@ -8,14 +8,16 @@ public class Bug {
     private String mName;
     private String mInfo;
     private String mPolyAssetID;
+    private float mScale;
     private float mGfLat;
     private float mGfLon;
     private float mGfRadius;
 
-    public Bug (String name, String info, String polyAssetId, float lat, float lon, float radius){
+    public Bug (String name, String info, String polyAssetId, float scale, float lat, float lon, float radius){
         this.mName = name;
         this.mInfo = info;
         this.mPolyAssetID = polyAssetId;
+        this.mScale = scale;
         this.mGfLat = lat;
         this.mGfLon = lon;
         this.mGfRadius = radius;
@@ -43,6 +45,14 @@ public class Bug {
 
     public void setPolyAssetID(String polyAssetID) {
         mPolyAssetID = polyAssetID;
+    }
+
+    public float getScale(){
+        return mScale;
+    }
+
+    public void setScale(float scale) {
+        mScale = scale;
     }
 
     public float getLat(){

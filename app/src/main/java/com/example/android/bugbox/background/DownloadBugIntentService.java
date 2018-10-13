@@ -17,15 +17,19 @@ public class DownloadBugIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         String polyAssetId = null;
+        float scale = 0.0f;
         String action = intent.getAction();
         Context context = getApplicationContext();
         if (intent.hasExtra(NotificationUtils.POLY_ASSET_ID_KEY)) {
             polyAssetId = intent.getStringExtra(NotificationUtils.POLY_ASSET_ID_KEY);
         }
+        if (intent.hasExtra(NotificationUtils.SCALE_KEY)) {
+            scale = intent.getFloatExtra(NotificationUtils.SCALE_KEY, 0.006f);
+        }
 
         //handle selected notification action
         if (NotificationUtils.ACTION_DOWNLOAD_BUG.equals(action) && polyAssetId != null) {
-            DownloadBugUtils.downloadBug(context, polyAssetId);
+            DownloadBugUtils.downloadBug(context, polyAssetId, scale);
             NotificationUtils.clearAllNotifications(context);
 
             //send local broadcast to DownloadedBugReceiver so it can start bugs activity

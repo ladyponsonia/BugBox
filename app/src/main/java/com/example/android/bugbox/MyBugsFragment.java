@@ -34,7 +34,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     private View mRootview;
     private RecyclerView mBugsRV;
-    private static BugAdapter mBugAdapter;
+    public static BugAdapter mBugAdapter;
     private LayoutManager mLayoutManager;
     private LinearLayout mNoDataLayout;
 
@@ -166,5 +166,9 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         editor.putInt(BUG_NUMBER_KEY, numberOfBugs);
         editor.commit();
 
+    }
+
+    public void scrollToNewBug(){
+        mBugsRV.scrollToPosition(mBugAdapter.getItemCount() - 1);
     }
 }

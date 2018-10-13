@@ -10,8 +10,19 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    //with help from https://stackoverflow.com/questions/33645835/confused-with-signing-android-apk
+    signingConfigs {
+        release {
+            storeFile file("$rootDir/BugBoxKeystore.jks")
+            storePassword RELEASE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_PASSWORD
+
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

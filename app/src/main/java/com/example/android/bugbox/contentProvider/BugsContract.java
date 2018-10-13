@@ -21,6 +21,7 @@ public class BugsContract {
 
         // table has an automatically produced "_ID" column in addition to the ones below
         public static final String COLUMN_POLY_ASSET_ID = "polyAssetID";
+        public static final String COLUMN_SCALE = "scale";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_AUTHOR_NAME = "authorName";
         public static final String COLUMN_OBJ_URL = "objUrl";

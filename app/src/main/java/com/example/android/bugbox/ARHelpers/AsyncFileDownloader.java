@@ -16,6 +16,9 @@ package com.example.android.bugbox.ARHelpers;
 import android.os.Handler;
 import android.support.annotation.IntDef;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.example.android.bugbox.ARActivity;
 
 import java.util.ArrayList;
 
