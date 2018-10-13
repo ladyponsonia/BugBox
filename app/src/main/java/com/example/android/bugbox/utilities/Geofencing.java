@@ -96,13 +96,13 @@ public class Geofencing {
                 .addOnSuccessListener(activity, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("GEOFENCING", "geofences added");
+                        Log.d(TAG, "geofences added");
                     }
                 })
                 .addOnFailureListener(activity, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("GEOFENCING", "failed to add geofences");
+                        Log.d(TAG, "failed to add geofences");
                     }
                 });
     }

@@ -1,16 +1,19 @@
 package com.example.android.bugbox;
 
 import android.Manifest;
+import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.bugbox.ARHelpers.helpers.CameraPermissionHelper;
@@ -26,7 +29,7 @@ import java.util.ArrayList;
 
 public class BugsActivity extends AppCompatActivity{
 
-    private final String TAG = this.getClass().getSimpleName();
+    private static final String TAG = "BugsActivity";
     private static final int ACCESS_LOCATION_CODE = 444;
 
     private static FragmentPagerAdapter mAdapter;
@@ -107,7 +110,6 @@ public class BugsActivity extends AppCompatActivity{
         // with help from https://www.101apps.co.za/articles/using-an-intentservice-to-do-background-work.html
         mReceiver = new BugDownloadedBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
-        intentFilter.addAction(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.registerReceiver(mReceiver, intentFilter);
 
@@ -131,17 +133,14 @@ public class BugsActivity extends AppCompatActivity{
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "OnPermissionsResult: " + requestCode + permissions.length + grantResults.length);
         if (requestCode == Geofencing.ACCESS_FINE_LOCATION_CODE) {
             // If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted
-                Log.d(TAG, "location permission granted in activity");
                 //register geofences
                 mGeofencing.registerAllGeofences(BugsActivity.this);
-                MapFragment frag = (MapFragment) mAdapter.getFragment(0);
+                MapFragment frag = (MapFragment) getFragmentFromPager(0);
                 frag.centerOnUserLocation();
-
 
             } else {
                 // permission denied
@@ -153,16 +152,21 @@ public class BugsActivity extends AppCompatActivity{
 
     //refresh myBugs recycler view
     public static void refreshMyBugs() {
-        MyBugsFragment frag = (MyBugsFragment) mAdapter.getFragment(1);
+        MyBugsFragment frag = (MyBugsFragment) getFragmentFromPager(1);
         frag.refreshData();
     }
 
     public static void switchToMyBugsTab(){
-        Log.d("TAG", "switchToMyBugsTab called");
+        Log.d(TAG, "switchToMyBugsTab called");
         mViewPager.setCurrentItem(1, true);
         //scroll to newest bug
-        MyBugsFragment frag = (MyBugsFragment) mAdapter.getFragment(1);
-        frag.scrollToNewBug();
-
+        MyBugsFragment frag = (MyBugsFragment)getFragmentFromPager(1) ;
+        frag.setProgressBarVisibility(View.VISIBLE);
     }
+
+    public static Fragment getFragmentFromPager(int position){
+        return mAdapter.getFragment(position);
+    }
+
+
 }

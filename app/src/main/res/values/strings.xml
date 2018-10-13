@@ -26,6 +26,14 @@
     <string name="bug_inserted_toast_part2">\u0020 to bugs collection.</string>
 
     <string name="ar_connection_error">You need internet connection to see the bug in AR.</string>
+    <string name="instal_arcore">Please install ARCore</string>
+    <string name="update_arcore">Please update ARCore</string>
+    <string name="update_app">Please update this app</string>
+    <string name="no_support_ar">This device does not support AR</string>
+    <string name="ar_session_fail">Failed to create AR session</string>
+    <string name="camera_unavailable">Camera not available. Please restart the app.</string>
+    <string name="searching_surfaces">Searching for surfaces...</string>
+    <string name="camera_permission_denied">Camera permission is needed to run this application</string>
 
     <string name="add_widget">Add widget</string>
     <string name="widget_number_content_description">number of bugs collected</string>
@@ -39,6 +47,5 @@
     <string name="ladybug_info">Its scientific name is Coccinellidae which is derived from the Latin word coccineus meaning \"scarlet\"</string>
     <string name="hornet_name">Hornet</string>
     <string name="hornet_info">Wasps native to North America are commonly referred to as hornets but are actually yellowjackets, their close relatives.</string>
-
 
 </resources>

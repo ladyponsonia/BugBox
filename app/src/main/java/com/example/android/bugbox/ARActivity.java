@@ -122,14 +122,10 @@ public class ARActivity extends AppCompatActivity
         //get selected bug id
         Intent intent = getIntent();
         mId = intent.getExtras().getInt(MyBugsFragment.BUG_ID);
-        Log.d("AR ACTIVITY", String.valueOf(mId));
+        Log.d(TAG, String.valueOf(mId));
         //start loader to get bug info from db
         getSupportLoaderManager().initLoader(DB_QUERY_LOADER_ID, null, this);
 
-        //check connection
-        if (!isOnline(this)) {
-            Toast.makeText(this, R.string.ar_connection_error, Toast.LENGTH_LONG).show();
-        }
         surfaceView = findViewById(R.id.surfaceview);
         displayRotationHelper = new DisplayRotationHelper(this);
 
@@ -203,7 +199,10 @@ public class ARActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
+        //check connection
+        if (!isOnline(this)) {
+            Toast.makeText(this, R.string.ar_connection_error, Toast.LENGTH_LONG).show();
+        }
         if (session == null) {
             Exception exception = null;
             String message = null;
@@ -228,19 +227,19 @@ public class ARActivity extends AppCompatActivity
 
             } catch (UnavailableArcoreNotInstalledException
                     | UnavailableUserDeclinedInstallationException e) {
-                message = "Please install ARCore";
+                message = getString(R.string.instal_arcore);
                 exception = e;
             } catch (UnavailableApkTooOldException e) {
-                message = "Please update ARCore";
+                message = getString(R.string.update_arcore);
                 exception = e;
             } catch (UnavailableSdkTooOldException e) {
-                message = "Please update this app";
+                message = getString(R.string.update_app);
                 exception = e;
             } catch (UnavailableDeviceNotCompatibleException e) {
-                message = "This device does not support AR";
+                message = getString(R.string.no_support_ar);
                 exception = e;
             } catch (Exception e) {
-                message = "Failed to create AR session";
+                message = getString(R.string.ar_session_fail);
                 exception = e;
             }
 
@@ -258,7 +257,7 @@ public class ARActivity extends AppCompatActivity
             // In some cases (such as another camera app launching) the camera may be given to
             // a different app instead. Handle this properly by showing a message and recreate the
             // session at the next iteration.
-            messageSnackbarHelper.showError(this, "Camera not available. Please restart the app.");
+            messageSnackbarHelper.showError(this, getString(R.string.camera_unavailable));
             session = null;
             return;
         }
@@ -266,7 +265,7 @@ public class ARActivity extends AppCompatActivity
         surfaceView.onResume();
         displayRotationHelper.onResume();
 
-        messageSnackbarHelper.showMessage(this, "Searching for surfaces...");
+        messageSnackbarHelper.showMessage(this, getString(R.string.searching_surfaces));
     }
 
     @Override
@@ -285,7 +284,7 @@ public class ARActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
+            Toast.makeText(this, R.string.camera_permission_denied, Toast.LENGTH_LONG)
                     .show();
             if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
                 // Permission denied with checking "Do not ask again".

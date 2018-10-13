@@ -53,7 +53,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private boolean mIsMapReady;
     private Location mUserLocation;
 
-
     public MapFragment() {
         // Required empty public constructor
     }
@@ -62,7 +61,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -160,11 +158,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         }catch(Exception e){
             e.printStackTrace();
-            Log.d(TAG, "Exception caught, null provider");
+            Log.d(TAG, "Exception caught");
             Toast.makeText(getContext(),getString(R.string.map_error), Toast.LENGTH_LONG ).show();
         }
-
-
         if (mUserLocation != null) {
             Log.d(TAG, mUserLocation.toString());
             //center camera on user's location
@@ -172,7 +168,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     .newLatLngZoom(new LatLng(mUserLocation.getLatitude(), mUserLocation.getLongitude()), 12));
         }
     }
-
 
     //open google maps to provide navigation
     //with help from https://developers.google.com/maps/documentation/urls/android-intents

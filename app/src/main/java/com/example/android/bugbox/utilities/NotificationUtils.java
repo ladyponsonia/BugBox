@@ -38,15 +38,15 @@ public class NotificationUtils {
         channel.setDescription(description);
         // Register the channel with the system
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     //Notification to download bug
     //with help from https://developer.android.com/training/notify-user/build-notification
     //and https://stackoverflow.com/questions/48260875/android-how-to-create-a-notification-with-action
     public static void sendNotification(Context context, Bug bug) {
-
-        Log.d ("NOTIFICATION", "sendNotification called");
 
         String bugName = bug.getName();
 

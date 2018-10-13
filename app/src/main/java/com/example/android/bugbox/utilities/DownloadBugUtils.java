@@ -32,7 +32,6 @@ public class DownloadBugUtils {
 
     //download bug and insert into db
     public static void downloadBug(final Context context, String polyAssetId, final float scale) {
-        Log.d("SERVICE", "downloadBug called");
 
         //Create handle for the RetrofitInstance interface
         GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);

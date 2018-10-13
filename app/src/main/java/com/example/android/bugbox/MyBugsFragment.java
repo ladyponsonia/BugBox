@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
-import android.content.Context;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.database.Cursor;
@@ -20,8 +19,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.ProgressBar;
+
 
 import com.example.android.bugbox.adapters.BugAdapter;
 import com.example.android.bugbox.contentProvider.BugsContract.BugEntry;
@@ -32,17 +33,16 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private View mRootview;
-    private RecyclerView mBugsRV;
-    public static BugAdapter mBugAdapter;
-    private LayoutManager mLayoutManager;
-    private LinearLayout mNoDataLayout;
-
     private static final int DB_QUERY_LOADER_ID = 888;
     public static final String BUG_ID = "bug-id";
     public static final String BUG_NUMBER_KEY = "number-of-bugs";
 
-
+    private View mRootview;
+    private RecyclerView mBugsRV;
+    private LinearLayout mNoDataLayout;
+    private ProgressBar mProgressBar;
+    public static BugAdapter mBugAdapter;
+    private LayoutManager mLayoutManager;
 
     public MyBugsFragment() {
         // Required empty public constructor
@@ -59,8 +59,10 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         // Inflate the layout for this fragment
         mRootview = inflater.inflate(R.layout.fragment_my_bugs, container, false);
         mNoDataLayout = mRootview.findViewById(R.id.no_bugs_lyt);
+        mProgressBar = mRootview.findViewById(R.id.mybugs_progress_bar);
         setBugAdapter();
         //db query to get data for mybugs recycler view
+        setProgressBarVisibility(View.VISIBLE);
         getActivity().getSupportLoaderManager().initLoader(DB_QUERY_LOADER_ID, null, this);
 
         // Add a touch helper to swipe left to delete an item.
@@ -113,6 +115,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
         Log.d (TAG, "onLoadFinished ") ;
+        setProgressBarVisibility(View.GONE);
         mBugAdapter.swapCursor(newCursor);
         saveNumberOfBugs();//saves number to display in app widget
         //if there's no data show no bugs msg
@@ -150,6 +153,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
     // to be called from activity when new bug is added to db
     public void refreshData(){
         Log.d (TAG, "refreshing data") ;
+        setProgressBarVisibility(View.VISIBLE);
         getActivity().getSupportLoaderManager().restartLoader(DB_QUERY_LOADER_ID, null, this );
     }
 
@@ -168,7 +172,21 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     }
 
+    //register ViewTree observer to scroll after rv loaded all views
+    //with help from https://stackoverflow.com/questions/26580723/how-to-scroll-to-the-bottom-of-a-recyclerview-scrolltoposition-doesnt-work
     public void scrollToNewBug(){
-        mBugsRV.scrollToPosition(mBugAdapter.getItemCount() - 1);
+
+        mBugsRV.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mBugsRV.scrollToPosition(mBugAdapter.getItemCount() - 1);
+                // Unregister the listener to only call scrollToPosition once
+                mBugsRV.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+    }
+
+    public void setProgressBarVisibility(int visibility){
+        mProgressBar.setVisibility(visibility);
     }
 }
