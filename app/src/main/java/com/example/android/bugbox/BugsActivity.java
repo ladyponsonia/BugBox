@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.android.bugbox.ARHelpers.helpers.CameraPermissionHelper;
 import com.example.android.bugbox.adapters.FragmentPagerAdapter;
 import com.example.android.bugbox.adapters.LockableViewPager;
 import com.example.android.bugbox.background.BugDownloadedBroadcastReceiver;
@@ -102,7 +103,6 @@ public class BugsActivity extends AppCompatActivity{
         mGeofencing.registerAllGeofences(BugsActivity.this);
 
 
-
         //register receiver to get notified when bug is done downloading
         // with help from https://www.101apps.co.za/articles/using-an-intentservice-to-do-background-work.html
         mReceiver = new BugDownloadedBroadcastReceiver();
@@ -139,15 +139,17 @@ public class BugsActivity extends AppCompatActivity{
                 Log.d(TAG, "location permission granted in activity");
                 //register geofences
                 mGeofencing.registerAllGeofences(BugsActivity.this);
+                MapFragment frag = (MapFragment) mAdapter.getFragment(0);
+                frag.centerOnUserLocation();
 
 
             } else {
                 // permission denied
-                Log.d(TAG, "location permission denied in activity");
                 Toast.makeText(this, R.string.geofence_location_permission_denied, Toast.LENGTH_LONG).show();
+                finish();
+                }
             }
         }
-    }
 
     //refresh myBugs recycler view
     public static void refreshMyBugs() {

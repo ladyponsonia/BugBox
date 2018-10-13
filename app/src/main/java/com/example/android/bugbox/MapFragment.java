@@ -43,9 +43,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private static final int ACCESS_LOCATION_CODE = 555;
-
-
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
     private ProgressBar mProgressBar;
@@ -78,16 +75,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //check location permission
-                if (getContext().checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED ) {
-                    Log.d(TAG, "Request permission from fragment");
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            ACCESS_LOCATION_CODE);
 
-                }else {
-                    centerOnUserLocation();
-                }
+                centerOnUserLocation();
             }
         });
         mMyLocation.setVisibility(View.INVISIBLE);
@@ -139,16 +128,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMyLocation.setVisibility(View.VISIBLE);
         mDirections.setVisibility(View.VISIBLE);
         mMapFragment.setUserVisibleHint(true);
-        //check location permission
-        if (getContext().checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ) {
-            Log.d(TAG, "Request permission from fragment");
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    ACCESS_LOCATION_CODE);
 
-        }else{
             centerOnUserLocation();
-        }
+
 
 
 
@@ -165,42 +147,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == ACCESS_LOCATION_CODE) {
-            Log.d(TAG, "the permission request code matches");
-            Log.d(TAG, "permissions: " + permissions.length);
-            Log.d(TAG, "grantResults: " + grantResults.length);
-
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "permission granted in fragment");
-                // permission was granted
-                centerOnUserLocation();
-
-            } else {
-                // permission denied
-                Log.d(TAG, "permission denied in fragment");
-                Toast.makeText(getContext(), getString(R.string.map_location_permission_denied), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-
-
     //set camera to current location
-    private void centerOnUserLocation() {
+    public void centerOnUserLocation() {
 
         try {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
-            mUserLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-
+            //check location permission
+            if (getContext().checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED ) {
+                mUserLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+            }
         }catch(Exception e){
             e.printStackTrace();
             Log.d(TAG, "Exception caught, null provider");
-            //Toast.makeText(getContext(),getString(R.string.map_error), Toast.LENGTH_LONG ).show();
+            Toast.makeText(getContext(),getString(R.string.map_error), Toast.LENGTH_LONG ).show();
         }
 
 
