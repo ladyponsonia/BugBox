@@ -1,8 +1,12 @@
 package com.example.android.bugbox;
 
+import android.Manifest;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +26,7 @@ import java.util.ArrayList;
 public class BugsActivity extends AppCompatActivity{
 
     private final String TAG = this.getClass().getSimpleName();
+    private static final int ACCESS_LOCATION_CODE = 444;
 
     private static FragmentPagerAdapter mAdapter;
     private TabLayout mTabLayout;
@@ -96,6 +101,8 @@ public class BugsActivity extends AppCompatActivity{
         mGeofencing.createGeofenceList();
         mGeofencing.registerAllGeofences(BugsActivity.this);
 
+
+
         //register receiver to get notified when bug is done downloading
         // with help from https://www.101apps.co.za/articles/using-an-intentservice-to-do-background-work.html
         mReceiver = new BugDownloadedBroadcastReceiver();
@@ -103,8 +110,8 @@ public class BugsActivity extends AppCompatActivity{
         intentFilter.addAction(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.registerReceiver(mReceiver, intentFilter);
-    }
 
+    }
 
     @Override
     protected void onRestart() {
@@ -112,12 +119,34 @@ public class BugsActivity extends AppCompatActivity{
         refreshMyBugs();
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //unregister receiver
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "OnPermissionsResult: " + requestCode + permissions.length + grantResults.length);
+        if (requestCode == Geofencing.ACCESS_FINE_LOCATION_CODE) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted
+                Log.d(TAG, "location permission granted in activity");
+                //register geofences
+                mGeofencing.registerAllGeofences(BugsActivity.this);
+
+
+            } else {
+                // permission denied
+                Log.d(TAG, "location permission denied in activity");
+                Toast.makeText(this, R.string.geofence_location_permission_denied, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     //refresh myBugs recycler view

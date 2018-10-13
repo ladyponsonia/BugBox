@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -42,7 +43,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private static final int ACCESS_FINE_LOCATON_CODE = 444;
+    private static final int ACCESS_LOCATION_CODE = 555;
+
 
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
@@ -76,7 +78,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                centerOnUserLocation();
+                //check location permission
+                if (getContext().checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED ) {
+                    Log.d(TAG, "Request permission from fragment");
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            ACCESS_LOCATION_CODE);
+
+                }else {
+                    centerOnUserLocation();
+                }
             }
         });
         mMyLocation.setVisibility(View.INVISIBLE);
@@ -107,7 +118,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomGesturesEnabled(true);
-        //mMap.setMyLocationEnabled(true);
 
         //get bugs data
         ArrayList<Bug> bugsList = BugsActivity.bugsList;
@@ -129,8 +139,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMyLocation.setVisibility(View.VISIBLE);
         mDirections.setVisibility(View.VISIBLE);
         mMapFragment.setUserVisibleHint(true);
-        //Log.d(TAG, "location permission: " + checkLocationPermission());
-        centerOnUserLocation();
+        //check location permission
+        if (getContext().checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ) {
+            Log.d(TAG, "Request permission from fragment");
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    ACCESS_LOCATION_CODE);
+
+        }else{
+            centerOnUserLocation();
+        }
+
 
 
         mMap.setOnMarkerClickListener(this);
@@ -145,14 +164,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         return true;
     }
 
-    public void requestLocationPermissions(){
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    ACCESS_FINE_LOCATON_CODE);
-            return;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == ACCESS_LOCATION_CODE) {
+            Log.d(TAG, "the permission request code matches");
+            Log.d(TAG, "permissions: " + permissions.length);
+            Log.d(TAG, "grantResults: " + grantResults.length);
+
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "permission granted in fragment");
+                // permission was granted
+                centerOnUserLocation();
+
+            } else {
+                // permission denied
+                Log.d(TAG, "permission denied in fragment");
+                Toast.makeText(getContext(), getString(R.string.map_location_permission_denied), Toast.LENGTH_LONG).show();
+            }
         }
     }
+
 
 
     //set camera to current location
@@ -160,26 +194,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         try {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            if(locationManager!= null){
-                Log.d(TAG, "location manager: " + locationManager);
-            }
-
             Criteria criteria = new Criteria();
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        ACCESS_FINE_LOCATON_CODE);
-                return;
-            }
-
-            if(locationManager.getBestProvider(criteria, false)!=null) {
-                Log.d(TAG, "provider: " + locationManager.getBestProvider(criteria, false));
-            }
             mUserLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
 
         }catch(Exception e){
             e.printStackTrace();
-            Log.d(TAG, "Exception caught");
+            Log.d(TAG, "Exception caught, null provider");
+            //Toast.makeText(getContext(),getString(R.string.map_error), Toast.LENGTH_LONG ).show();
         }
 
 
@@ -204,23 +225,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         startActivity(navigationIntent);
 
     }
-
-/*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == ACCESS_FINE_LOCATON_CODE) {
-            // If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission was granted
-                centerOnUserLocation();
-            } else {
-
-                // permission denied
-                Toast.makeText(getContext(), "permission denied", Toast.LENGTH_LONG).show();
-            }
-        }
-    }*/
-
 }

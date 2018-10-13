@@ -29,7 +29,7 @@ public class Geofencing {
 
     public static final String TAG = Geofencing.class.getSimpleName();
     private static final long GEOFENCE_TIMEOUT = 60480000; // 1 week
-    private static final int ACCESS_FINE_LOCATON_CODE = 444;
+    public static final int ACCESS_FINE_LOCATION_CODE = 444;
 
     public List<Geofence> mGeofenceList;
     private PendingIntent mGeofencePendingIntent;
@@ -89,7 +89,7 @@ public class Geofencing {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    ACCESS_FINE_LOCATON_CODE);
+                    ACCESS_FINE_LOCATION_CODE);
             return;
         }
         mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())

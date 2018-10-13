@@ -7,8 +7,9 @@
 
     <string name="map_tab_name">COLLECT</string>
     <string name="mybugs_tab_name">MY BUGS</string>
+    <string name="geofence_location_permission_denied">You won\'t be able to collect bugs if you don\'t allow access to your location</string>
     <string name="directions_toast">Select a marker first, then click on directions</string>
-    <string name="map_error">Map could not be loaded.</string>
+    <string name="map_error">Map couldn\'t be loaded.</string>
     <string name="no_bugs_text">No bugs yet.\n Go to the map tab to find some.</string>
     <string name="delete_bug_instructions">Swipe bug to delete it.</string>
 
@@ -38,5 +39,7 @@
     <string name="ladybug_info">Its scientific name is Coccinellidae which is derived from the Latin word coccineus meaning \"scarlet\"</string>
     <string name="hornet_name">Hornet</string>
     <string name="hornet_info">Wasps native to North America are commonly referred to as hornets but are actually yellowjackets, their close relatives.</string>
+    <string name="map_location_permission_denied">We can\'t find where you are if you don\'t allow access to your location</string>
+
 
 </resources>
