@@ -117,7 +117,7 @@ public class ARActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
 
-        mCursor =null;
+        //mCursor =null;
 
         //get selected bug id
         Intent intent = getIntent();
@@ -166,7 +166,7 @@ public class ARActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        if (mCursor != null) mCursor.close();
+        //if (mCursor != null) mCursor.close();
         mCursor = data;
 
         //get name and files paths
@@ -184,13 +184,13 @@ public class ARActivity extends AppCompatActivity
         //download files
         requestDataFiles();
 
-        mCursor.close();
+        //mCursor.close();
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         Log.d (TAG, "onLoaderReset");
-        if (mCursor != null) mCursor.close();
+        //if (mCursor != null) mCursor.close();
         mCursor = null;
 
     }

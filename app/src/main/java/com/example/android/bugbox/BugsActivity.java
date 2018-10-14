@@ -44,6 +44,7 @@ public class BugsActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bugs);
 
+        Log.d(TAG, "OnCreate");
         //initialize dummy bug data
         bugsList.add( new Bug(getString(R.string.stag_beetle_name), getString(R.string.stag_beetle_info),"4yufxgZ1QQ2",0.006f, 33.930277f , -118.434982f , 50.0f));
         bugsList.add( new Bug(getString(R.string.anaconda_name), getString(R.string.anaconda_info),"1pi9DfAbsz0", 0.03f, 33.930527f , -118.423598f , 50.0f));
@@ -52,13 +53,6 @@ public class BugsActivity extends AppCompatActivity{
 
         //create notification channel
         NotificationUtils.createNotificationChannel(this);
-
-        //get intent
-        Intent intent = this.getIntent();
-        if (BugDownloadedBroadcastReceiver.MYBUGS_TAB_ACTION.equals(intent.getAction())) {
-            Log.d(TAG, "Intent received from Broadcast Receiver");
-           switchToMyBugsTab();
-        }
 
         //get tabs titles
         tabTitles[0] = getResources().getString(R.string.map_tab_name);
@@ -106,6 +100,14 @@ public class BugsActivity extends AppCompatActivity{
             }
         });
 
+        //get intent
+        Intent intent = this.getIntent();
+        String extra;
+        if (intent.hasExtra(BugDownloadedBroadcastReceiver.MYBUGS_TAB_KEY)){
+            Log.d(TAG, "Intent received from Broadcast Receiver");
+            switchToMyBugsTab();
+        }
+
         //register geofences
         mGeofencing = new Geofencing(this, LocationServices.getGeofencingClient(this));
         mGeofencing.createGeofenceList();
@@ -122,12 +124,12 @@ public class BugsActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
+    protected void onResume() {
+        super.onResume();
         refreshMyBugs();
     }
 
-
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -171,21 +173,14 @@ public class BugsActivity extends AppCompatActivity{
     }
 
     public void switchToMyBugsTab(){
-        Log.d(TAG, "switchToMyBugsTab called");
-        mViewPager.setCurrentItem(1, true);
+        mViewPager.setCurrentItem(1);
         //scroll to newest bug
         String tag = (String) mViewPager.getTag(1);
+        Log.d(TAG, "switchToMyBugsTab tag: "+ tag);
         MyBugsFragment frag = (MyBugsFragment) getSupportFragmentManager().findFragmentByTag(tag) ;
         if (frag!=null) {
+            Log.d(TAG, "switchToMyBugsTab: "+ frag);
             frag.scrollToNewBug();
         }
     }
-
-    /*
-    public static Fragment getFragmentFromPager(int position){
-        return mAdapter.getFragment(position);
-    }*/
-
-
-
 }

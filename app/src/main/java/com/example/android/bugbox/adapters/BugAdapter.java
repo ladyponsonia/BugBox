@@ -41,8 +41,7 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
     @Override
     public BugAdapter.BugViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //inflate bug_grid_cell layout
-        Context context = parent.getContext();
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View view = layoutInflater.inflate(R.layout.bug_grid_cell, parent, false);
         //return BugViewHolder instance
         BugViewHolder viewholder = new BugViewHolder(view);
@@ -77,17 +76,18 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
             }
 
             //set image
+            int size = (int)mContext.getResources().getDimension(R.dimen.bug_image_size);
             Picasso.with(mContext).setLoggingEnabled(true);//to see logs
             if (bugThumbUrl.isEmpty()) {
                 Log.d(TAG, "using default image");
                 Picasso.with(mContext)
                         .load(R.drawable.placeholder_image)
-                        .resize(600, 600)
+                        .resize(size, size)
                         .into(holder.mImage);
             } else {
                 Picasso.with(mContext)
                         .load(bugThumbUrl)
-                        .resize(600, 600)
+                        .resize(size, size)
                         .placeholder(R.drawable.placeholder_image)
                         .into(holder.mImage);
             }
@@ -95,42 +95,40 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
 
     }
 
+    @Override
+    public int getItemCount () {
+        if (null == mCursor){
+            Log.d(TAG, "getItemCount: null cursor" );
+            return 0;
+        }
+        Log.d(TAG, "getItemCount: " + mCursor.getCount() );
+        return mCursor.getCount();
+
+    }
+
+    class BugViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public ImageView mImage;
+        public TextView mName;
+
+        public BugViewHolder(View itemView) {
+            super(itemView);
+            mImage = itemView.findViewById(R.id.bug_iv);
+            mName = itemView.findViewById(R.id.bug_tv);
+
+            itemView.setOnClickListener(this);
+        }
+
         @Override
-        public int getItemCount () {
-            if (null == mCursor){
-                Log.d(TAG, "getItemCount: null cursor" );
-                return 0;
-            }
-            Log.d(TAG, "getItemCount: " + mCursor.getCount() );
-            return mCursor.getCount();
-
+        public void onClick(View view) {
+            int id = (int) view.getTag();
+            Log.d(TAG, String.valueOf(id));
+            mClickHandler.onClick(id);
         }
-
-        class BugViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            public ImageView mImage;
-            public TextView mName;
-
-            public BugViewHolder(View itemView) {
-                super(itemView);
-                mImage = itemView.findViewById(R.id.bug_iv);
-                mName = itemView.findViewById(R.id.bug_tv);
-
-                itemView.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View view) {
-                int id = (int) view.getTag();
-                Log.d(TAG, String.valueOf(id));
-                mClickHandler.onClick(id);
-            }
-        }
+    }
 
     public void swapCursor(Cursor newCursor) {
-        //close the previous mCursor
-        //if (mCursor != null) mCursor.close();
-        //mCursor = newCursor;
+        mCursor = newCursor;
         if (newCursor != null) {
             // Force the RecyclerView to refresh
             this.notifyDataSetChanged();

@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.example.android.bugbox.BugsActivity;
@@ -18,6 +19,8 @@ import java.util.Map;
 and https://stackoverflow.com/questions/18609261/getting-the-current-fragment-instance-in-the-viewpager*/
 
 public class TabsFragmentPagerAdapter extends FragmentPagerAdapter {
+
+    private final String TAG = this.getClass().getSimpleName();
 
     int mNumOfTabs;
     public static Map<Integer, String> mFragmentTags = new HashMap<>();
@@ -76,19 +79,7 @@ public class TabsFragmentPagerAdapter extends FragmentPagerAdapter {
 
 
     public String getTag(int position){
+        Log.d(TAG, "Tag: " + mFragmentTags.get(position) );
         return mFragmentTags.get(position);
     }
-
-    /*
-    public Fragment getFragment(int position) {
-        if( position == 0 ){
-            return mTab1;
-        }else if ( position == 1){
-            return mTab2;
-        }else{
-            return null;
-        }
-    }*/
-
-
 }

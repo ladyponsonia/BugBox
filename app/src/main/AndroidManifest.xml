@@ -35,8 +35,8 @@
         </activity>
         <activity
             android:name=".BugsActivity"
-            android:launchMode="singleInstance"
             android:parentActivityName=".MainActivity" />
+        <!--android:launchMode="singleInstance" -->
         <activity
             android:name=".ARActivity"
             android:launchMode="singleInstance"

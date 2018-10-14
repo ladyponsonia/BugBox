@@ -101,15 +101,19 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     @Override
     public Loader onCreateLoader(int id, Bundle bundle) {
+        switch (id) {
+            case DB_QUERY_LOADER_ID:
+                String[] mProjection = {BugEntry._ID, BugEntry.COLUMN_NAME, BugEntry.COLUMN_THUMBNAIL};
 
-        String[] mProjection = {BugEntry._ID, BugEntry.COLUMN_NAME, BugEntry.COLUMN_THUMBNAIL};
-
-        return new CursorLoader(getContext(),
-                BugEntry.CONTENT_URI,
-                mProjection,
-                null,
-                null,
-                null);
+                return new CursorLoader(getContext(),
+                        BugEntry.CONTENT_URI,
+                        mProjection,
+                        null,
+                        null,
+                        null);
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + id);
+        }
     }
 
     @Override
@@ -137,7 +141,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     private void setBugAdapter() {
         mBugsRV = mRootview.findViewById(R.id.bugs_rv);
-        mBugAdapter = new BugAdapter(getActivity(), this );
+        mBugAdapter = new BugAdapter(getActivity(),this );
         //2 column for portrait, 3 column for landscape
         int columnsNum = 2;
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
