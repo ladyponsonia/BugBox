@@ -33,8 +33,8 @@ public class DownloadBugIntentService extends IntentService {
             NotificationUtils.clearAllNotifications(context);
 
             //send local broadcast to DownloadedBugReceiver so it can start bugs activity
-            Intent bugsIntent= new Intent(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
-            bugsIntent.setAction(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
+            Intent bugsIntent= new Intent(BugDownloadedBroadcastReceiver.OPEN_BUGS_ACTION);
+            bugsIntent.setAction(BugDownloadedBroadcastReceiver.OPEN_BUGS_ACTION);
             LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
             localBroadcastManager.sendBroadcast(bugsIntent);
 

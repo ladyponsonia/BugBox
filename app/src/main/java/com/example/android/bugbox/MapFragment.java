@@ -94,7 +94,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mProgressBar = rootview.findViewById(R.id.map_progress_bar);
         mProgressBar.setVisibility(View.VISIBLE);
         mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mMapFragment.setUserVisibleHint(false);
+        //mMapFragment.setUserVisibleHint(false);
 
         //start map
         mMapFragment.getMapAsync(this);
@@ -105,6 +105,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setZoomGesturesEnabled(true);
+        if (getContext().checkSelfPermission( Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED ) {
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        }
 
         //get bugs data
         ArrayList<Bug> bugsList = BugsActivity.bugsList;
@@ -125,7 +130,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mProgressBar.setVisibility(View.INVISIBLE);
         mMyLocation.setVisibility(View.VISIBLE);
         mDirections.setVisibility(View.VISIBLE);
-        mMapFragment.setUserVisibleHint(true);
+        //mMapFragment.setUserVisibleHint(true);
 
             centerOnUserLocation();
 

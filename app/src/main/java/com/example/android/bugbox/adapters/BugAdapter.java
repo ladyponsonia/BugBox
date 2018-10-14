@@ -52,41 +52,47 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull BugAdapter.BugViewHolder holder, int position) {
         // Move the mCursor to the position of the item to be displayed
-       if (!mCursor.moveToPosition(position)) {return;} // bail if returned null
-        Log.d(TAG, "OnBindViewHolder, cursor position: " + position);
-        //display data from cursor
-        String bugName = mCursor.getString(mCursor.getColumnIndex(BugEntry.COLUMN_NAME));
-        String bugThumbUrl = mCursor.getString(mCursor.getColumnIndex(BugEntry.COLUMN_THUMBNAIL));
-        int bugId = mCursor.getInt(mCursor.getColumnIndex(BugEntry._ID ));
+        if (!mCursor.isClosed()) {
+            if (!mCursor.moveToPosition(position)) {
+                return;// bail if returned null
+            }
 
-        Log.d(TAG, bugName + " " + bugThumbUrl + " " + bugId );
+            Log.d(TAG, "OnBindViewHolder, cursor position: " + position);
+            //display data from cursor
+            String bugName = mCursor.getString(mCursor.getColumnIndex(BugEntry.COLUMN_NAME));
+            String bugThumbUrl = mCursor.getString(mCursor.getColumnIndex(BugEntry.COLUMN_THUMBNAIL));
+            int bugId = mCursor.getInt(mCursor.getColumnIndex(BugEntry._ID));
 
-        //set id if not empty
-        if (bugId != 0) {
-            //set tag. will be used to delete item
-            holder.itemView.setTag(bugId);
+            Log.d(TAG, bugName + " " + bugThumbUrl + " " + bugId);
+
+            //set id if not empty
+            if (bugId != 0) {
+                //set tag. will be used to delete item
+                holder.itemView.setTag(bugId);
+            }
+
+            //set name if not empty
+            if (!bugName.isEmpty()) {
+                holder.mName.setText(bugName);
+            }
+
+            //set image
+            Picasso.with(mContext).setLoggingEnabled(true);//to see logs
+            if (bugThumbUrl.isEmpty()) {
+                Log.d(TAG, "using default image");
+                Picasso.with(mContext)
+                        .load(R.drawable.placeholder_image)
+                        .resize(600, 600)
+                        .into(holder.mImage);
+            } else {
+                Picasso.with(mContext)
+                        .load(bugThumbUrl)
+                        .resize(600, 600)
+                        .placeholder(R.drawable.placeholder_image)
+                        .into(holder.mImage);
+            }
         }
 
-        //set name if not empty
-        if (!bugName.isEmpty()) {
-            holder.mName.setText(bugName);
-        }
-
-        //set image
-        Picasso.with(mContext).setLoggingEnabled(true);//to see logs
-        if (bugThumbUrl.isEmpty()) {
-            Log.d(TAG, "using default image");
-            Picasso.with(mContext)
-                    .load(R.drawable.placeholder_image)
-                    .resize(600, 600)
-                    .into(holder.mImage);
-        }else {
-            Picasso.with(mContext)
-                    .load(bugThumbUrl)
-                    .resize(600,600)
-                    .placeholder(R.drawable.placeholder_image)
-                    .into(holder.mImage);
-        }
     }
 
         @Override
@@ -123,12 +129,13 @@ public class BugAdapter extends RecyclerView.Adapter<BugAdapter.BugViewHolder> {
 
     public void swapCursor(Cursor newCursor) {
         //close the previous mCursor
-        if (mCursor != null) mCursor.close();
-        mCursor = newCursor;
+        //if (mCursor != null) mCursor.close();
+        //mCursor = newCursor;
         if (newCursor != null) {
             // Force the RecyclerView to refresh
             this.notifyDataSetChanged();
         }
     }
+
 
 }

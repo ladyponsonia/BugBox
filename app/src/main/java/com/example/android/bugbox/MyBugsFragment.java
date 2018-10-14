@@ -41,7 +41,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
     private RecyclerView mBugsRV;
     private LinearLayout mNoDataLayout;
     private ProgressBar mProgressBar;
-    public static BugAdapter mBugAdapter;
+    public  BugAdapter mBugAdapter;
     private LayoutManager mLayoutManager;
 
     public MyBugsFragment() {
@@ -179,6 +179,7 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
         mBugsRV.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                Log.d(TAG, "OnGlobalLayout called");
                 mBugsRV.scrollToPosition(mBugAdapter.getItemCount() - 1);
                 // Unregister the listener to only call scrollToPosition once
                 mBugsRV.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -188,5 +189,9 @@ public class MyBugsFragment extends Fragment implements BugAdapter.BugOnClickHan
 
     public void setProgressBarVisibility(int visibility){
         mProgressBar.setVisibility(visibility);
+    }
+
+    public int getAdapterCount(){
+        return mBugAdapter.getItemCount();
     }
 }

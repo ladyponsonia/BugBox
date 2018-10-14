@@ -1,9 +1,9 @@
 package com.example.android.bugbox.adapters;
 
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
 import com.example.android.bugbox.BugsActivity;
@@ -11,19 +11,18 @@ import com.example.android.bugbox.MapFragment;
 import com.example.android.bugbox.MyBugsFragment;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 /* with help from https://www.truiton.com/2015/06/android-tabs-example-fragments-viewpager/
 and https://stackoverflow.com/questions/18609261/getting-the-current-fragment-instance-in-the-viewpager*/
 
-public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class TabsFragmentPagerAdapter extends FragmentPagerAdapter {
 
     int mNumOfTabs;
+    public static Map<Integer, String> mFragmentTags = new HashMap<>();
 
-    MapFragment mTab1;
-    MyBugsFragment mTab2;
-
-    public FragmentPagerAdapter(FragmentManager fm, int NumOfTabs) {
+    public TabsFragmentPagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
     }
@@ -33,11 +32,9 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                mTab1 = new MapFragment();
-                return mTab1;
+                return new MapFragment();
             case 1:
-                mTab2 = new MyBugsFragment();
-                return mTab2;
+                return new MyBugsFragment();
             default:
                 return null;
         }
@@ -56,7 +53,33 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return tabsTitles[position];
     }
 
+    //override method to be able to get the current fragment from the activity
+    //with help from https://stackoverflow.com/questions/14035090/how-to-get-existing-fragments-when-using-fragmentpageradapter
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+        // get the tags set by FragmentPagerAdapter
+        switch (position) {
+            case 0:
+                String mapTag = createdFragment.getTag();
+                //save tag
+                mFragmentTags.put(0, mapTag);
+                break;
+            case 1:
+                String bugsTag = createdFragment.getTag();
+                mFragmentTags.put(1, bugsTag);
+                break;
+        }
 
+        return createdFragment;
+    }
+
+
+    public String getTag(int position){
+        return mFragmentTags.get(position);
+    }
+
+    /*
     public Fragment getFragment(int position) {
         if( position == 0 ){
             return mTab1;
@@ -65,7 +88,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         }else{
             return null;
         }
-    }
+    }*/
 
 
 }

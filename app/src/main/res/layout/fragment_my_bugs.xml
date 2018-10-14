@@ -22,7 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/no_bugs_image"/>
+            android:src="@drawable/no_bugs_image"
+            android:contentDescription="@string/no_bugs_graphic_cd" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -12,7 +12,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".MainActivity">
 
         <ImageView
@@ -24,7 +24,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/guideline2"
-            app:srcCompat="@drawable/bugbox_logo_negative" />
+            app:srcCompat="@drawable/bugbox_logo_negative"
+            android:contentDescription="@string/bugbox_logo_cd" />
 
         <TextView
             android:id="@+id/instructions_tv"

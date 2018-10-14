@@ -1,23 +1,17 @@
 package com.example.android.bugbox;
 
-import android.Manifest;
-import android.app.DownloadManager;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.example.android.bugbox.ARHelpers.helpers.CameraPermissionHelper;
-import com.example.android.bugbox.adapters.FragmentPagerAdapter;
+import com.example.android.bugbox.adapters.TabsFragmentPagerAdapter;
 import com.example.android.bugbox.adapters.LockableViewPager;
 import com.example.android.bugbox.background.BugDownloadedBroadcastReceiver;
 import com.example.android.bugbox.model.Bug;
@@ -32,9 +26,9 @@ public class BugsActivity extends AppCompatActivity{
     private static final String TAG = "BugsActivity";
     private static final int ACCESS_LOCATION_CODE = 444;
 
-    private static FragmentPagerAdapter mAdapter;
+    private TabsFragmentPagerAdapter mAdapter;
     private TabLayout mTabLayout;
-    private static LockableViewPager mViewPager;
+    private LockableViewPager mViewPager;
     private Geofencing mGeofencing;
     private BugDownloadedBroadcastReceiver mReceiver;
     private boolean mDeleteInstrShown;
@@ -59,6 +53,13 @@ public class BugsActivity extends AppCompatActivity{
         //create notification channel
         NotificationUtils.createNotificationChannel(this);
 
+        //get intent
+        Intent intent = this.getIntent();
+        if (BugDownloadedBroadcastReceiver.MYBUGS_TAB_ACTION.equals(intent.getAction())) {
+            Log.d(TAG, "Intent received from Broadcast Receiver");
+           switchToMyBugsTab();
+        }
+
         //get tabs titles
         tabTitles[0] = getResources().getString(R.string.map_tab_name);
         tabTitles[1] = getResources().getString(R.string.mybugs_tab_name);
@@ -71,7 +72,7 @@ public class BugsActivity extends AppCompatActivity{
         mTabLayout.addTab(mTabLayout.newTab());
 
         mViewPager = findViewById(R.id.fragments_pager);
-        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount());
+        mAdapter = new TabsFragmentPagerAdapter(getSupportFragmentManager(), mTabLayout.getTabCount());
         mViewPager.setAdapter(mAdapter);
         mViewPager.setSwipeable(false);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -84,7 +85,12 @@ public class BugsActivity extends AppCompatActivity{
                 //show delete instructions when MyBugs tab is selected,
                 // if there are bugs in the rv and if the message wasn't already shown
                 int position = tab.getPosition();
-                int bugs = MyBugsFragment.mBugAdapter.getItemCount();
+                int bugs = 0;
+                String tag = (String) mViewPager.getTag(position);
+                MyBugsFragment frag = (MyBugsFragment) getSupportFragmentManager().findFragmentByTag(tag) ;
+                if (frag!=null) {
+                    bugs = frag.getAdapterCount();
+                }
                 if(position == 1 && bugs>0 && !mDeleteInstrShown){
                     Toast.makeText(BugsActivity.this, R.string.delete_bug_instructions, Toast.LENGTH_LONG).show();
                     mDeleteInstrShown = true;
@@ -109,7 +115,7 @@ public class BugsActivity extends AppCompatActivity{
         //register receiver to get notified when bug is done downloading
         // with help from https://www.101apps.co.za/articles/using-an-intentservice-to-do-background-work.html
         mReceiver = new BugDownloadedBroadcastReceiver();
-        IntentFilter intentFilter = new IntentFilter(BugDownloadedBroadcastReceiver.SHOW_BUGS_ACTION);
+        IntentFilter intentFilter = new IntentFilter(BugDownloadedBroadcastReceiver.OPEN_BUGS_ACTION);
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         localBroadcastManager.registerReceiver(mReceiver, intentFilter);
 
@@ -131,7 +137,8 @@ public class BugsActivity extends AppCompatActivity{
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Geofencing.ACCESS_FINE_LOCATION_CODE) {
             // If request is cancelled, the result arrays are empty.
@@ -139,34 +146,46 @@ public class BugsActivity extends AppCompatActivity{
                 // permission was granted
                 //register geofences
                 mGeofencing.registerAllGeofences(BugsActivity.this);
-                MapFragment frag = (MapFragment) getFragmentFromPager(0);
-                frag.centerOnUserLocation();
-
+                //move map
+                String tag = (String) mViewPager.getTag(0);
+                MapFragment frag = (MapFragment) getSupportFragmentManager().findFragmentByTag(tag) ;
+                if (frag!=null) {
+                    frag.centerOnUserLocation();
+                }
             } else {
                 // permission denied
-                Toast.makeText(this, R.string.geofence_location_permission_denied, Toast.LENGTH_LONG).show();
-                finish();
+                Toast.makeText(this, R.string.geofence_location_permission_denied,
+                        Toast.LENGTH_LONG).show();
+                finish();//go back to main activity
                 }
             }
         }
 
     //refresh myBugs recycler view
-    public static void refreshMyBugs() {
-        MyBugsFragment frag = (MyBugsFragment) getFragmentFromPager(1);
-        frag.refreshData();
+    public void refreshMyBugs(){
+        String tag = (String) mViewPager.getTag(1);
+        MyBugsFragment frag = (MyBugsFragment) getSupportFragmentManager().findFragmentByTag(tag) ;
+        if (frag!=null) {
+            frag.refreshData();
+        }
     }
 
-    public static void switchToMyBugsTab(){
+    public void switchToMyBugsTab(){
         Log.d(TAG, "switchToMyBugsTab called");
         mViewPager.setCurrentItem(1, true);
         //scroll to newest bug
-        MyBugsFragment frag = (MyBugsFragment)getFragmentFromPager(1) ;
-        frag.setProgressBarVisibility(View.VISIBLE);
+        String tag = (String) mViewPager.getTag(1);
+        MyBugsFragment frag = (MyBugsFragment) getSupportFragmentManager().findFragmentByTag(tag) ;
+        if (frag!=null) {
+            frag.scrollToNewBug();
+        }
     }
 
+    /*
     public static Fragment getFragmentFromPager(int position){
         return mAdapter.getFragment(position);
-    }
+    }*/
+
 
 
 }
